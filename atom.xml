@@ -1,16 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[David Stump]]></title>
   <link href="http://davidstump.github.com/atom.xml" rel="self"/>
   <link href="http://davidstump.github.com/"/>
-  <updated>2012-12-26T13:27:24-05:00</updated>
+  <updated>2012-12-26T14:06:47-05:00</updated>
   <id>http://davidstump.github.com/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[David Stump]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Initial Commit.]]></title>
+    <link href="http://davidstump.github.com/blog/2012/12/26/initial-commit/"/>
+    <updated>2012-12-26T13:42:00-05:00</updated>
+    <id>http://davidstump.github.com/blog/2012/12/26/initial-commit</id>
+    <content type="html"><![CDATA[<p><strong>Happy Blizzard 2012!</strong></p>
+
+<p>It&#8217;s not quite New Year&#8217;s Eve, however, I thought I would get a jump start on a resolution early this year. The resolution idea comes from my awesome co-workers at <a href="http://littlelines.com">Littlelines</a> who each mentioned re-starting their blog presence and making an effort to write and share more in 2013. I love the developer community [specifically the Ruby/Rails community as of late] and the ease/effort with which help, advice, problems and solutions are shared and discussed. For this new year, I am planning to make a concerted effort to write, share and help the community that has helped in uncountable ways getting me where I am today [which is a pretty fantastic happy place!].</p>
+
+<p>Perhaps this sentimental resolution is partially a result of a bit too much holiday cheer [by way of food, presents, family and one midwest blizzard], but a little more cheer throughout the non-holiday months couldn&#8217;t hurt anyone, right?</p>
+
+<p>With that, I hope everyone had a relaxing holiday break and is pumped to start a brand new 2013 in a few days. Also, keep and eye out for some exciting Dayton Ruby Community news in the near future!!</p>
+
+<p><strong>Cheers!</strong><br/>
+<em>David</em></p>
+]]></content>
+  </entry>
   
 </feed>
