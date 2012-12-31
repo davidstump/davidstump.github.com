@@ -4,7 +4,7 @@
   <title><![CDATA[David Stump]]></title>
   <link href="http://davidstump.github.com/atom.xml" rel="self"/>
   <link href="http://davidstump.github.com/"/>
-  <updated>2012-12-31T13:41:03-05:00</updated>
+  <updated>2012-12-31T15:17:51-05:00</updated>
   <id>http://davidstump.github.com/</id>
   <author>
     <name><![CDATA[David Stump]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Add A Simple Git Timesheet]]></title>
+    <link href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/"/>
+    <updated>2012-12-31T15:06:00-05:00</updated>
+    <id>http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet</id>
+    <content type="html"><![CDATA[<p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
+
+<p>Step 1. Edit Your bash_profile file:</p>
+
+<pre><code> $ subl ~/.bash_profile
+</code></pre>
+
+<p>Step 2. Add an alias to your profile:</p>
+
+<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
+</code></pre>
+
+<p>Step 3. Save your profile</p>
+
+<p>Step 4. Check your daily timesheet:</p>
+
+<pre><code> david:~/Projects/octopress❮source❯$ timesheet
+      2a08dac Adjust navigation mobile styles and hide search field
+      816cfef Apply custom style to site
+      b96240c Add Murky-Mussels Theme
+</code></pre>
+
+<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
+
+<p>Cheers!<br/>
+David</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Initial Commit.]]></title>

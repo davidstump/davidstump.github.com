@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - David Stump</title>
+  <title>Add A Simple Git Timesheet - David Stump</title>
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="Blog Archive 2012 Add A Simple Git Timesheet
-Dec 31 2012 Initial Commit.
-Dec 26 2012 Recent Posts Add A Simple Git Timesheet Initial Commit. GitHub &hellip;">
+  <meta name="description" content="At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Dec 26 2012 Recent Posts Add A Simple Git Timesheet Initial Commit. GitHub &hell
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidstump.github.com/blog/archives/">
+  <link rel="canonical" href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -82,42 +80,112 @@ Dec 26 2012 Recent Posts Add A Simple Git Timesheet Initial Commit. GitHub &hell
     <div id="main">
       <div id="content">
 	<div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Add a Simple Git Timesheet</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
 
-  
-  <h2>2012</h2>
+<p>Step 1. Edit Your bash_profile file:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/12/31/add-a-simple-git-timesheet/">Add A Simple Git Timesheet</a></h1>
-<time datetime="2012-12-31T15:06:00-05:00" pubdate><span class='month'>Dec</span> <span class='day'>31</span> <span class='year'>2012</span></time>
+<pre><code> $ subl ~/.bash_profile
+</code></pre>
 
+<p>Step 2. Add an alias to your profile:</p>
 
-</article>
+<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
+</code></pre>
 
+<p>Step 3. Save your profile</p>
 
+<p>Step 4. Check your daily timesheet:</p>
 
-<article>
-  
-<h1><a href="/blog/2012/12/26/initial-commit/">Initial Commit.</a></h1>
-<time datetime="2012-12-26T13:42:00-05:00" pubdate><span class='month'>Dec</span> <span class='day'>26</span> <span class='year'>2012</span></time>
+<pre><code> david:~/Projects/octopress❮source❯$ timesheet
+      2a08dac Adjust navigation mobile styles and hide search field
+      816cfef Apply custom style to site
+      b96240c Add Murky-Mussels Theme
+</code></pre>
 
+<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
 
-</article>
-
+<p>Cheers!<br/>
+David</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">David Stump</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/26/initial-commit/" title="Previous Post: Initial Commit.">&laquo; Initial Commit.</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -206,7 +274,10 @@ Dec 26 2012 Recent Posts Add A Simple Git Timesheet Initial Commit. GitHub &hell
       var disqus_shortname = 'davidstump';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_url = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
