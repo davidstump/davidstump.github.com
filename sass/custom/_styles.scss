@@ -1,2 +1,29 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+#avatar {
+  width: 40px;
+  border-radius: 25px;
+  float: left;
+  margin: 3px 10px 0px 0px;
+}
+
+header h1 a {
+  display: inline-block;
+  margin-bottom: -15px;
+}
+
+nav li + li {
+  border-left: none;
+  a {
+    border-left: 1px solid lightgrey;
+  }
+}
+
+nav li a {
+  font-family: 'Raleway', sans-serif;
+}
+
+.maskImage a[rel="subscribe-rss"] {
+  opacity: 0.8;
+}
