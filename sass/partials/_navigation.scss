@@ -23,8 +23,12 @@ nav {
       }
     }
   }
-  fieldset[role=search]{ float: right; width: 48%; }
-  fieldset.mobile-nav{ float: left; width: 48%;
+  fieldset[role=search]{ 
+    float: right; 
+    width: 48%; 
+    display: none;
+  }
+  fieldset.mobile-nav{ float: left; width: 100%;
     select{ width: 100%; font-size: .8em; border: 1px solid #888;}
   }
   ul { display: none; }
@@ -70,14 +74,15 @@ nav {
         width: 93%;
         font-size: .95em;
         line-height: 1.2em;
+        display: none
       }
     }
     ul[data-subscription$=email] + form {
       width: $sidebar-width-medium - $pad-medium*2 - $sidebar-pad-medium - 58px;
       .search { width: 91%; }
     }
-    fieldset.mobile-nav { display: none; }
-    fieldset[role=search]{ width: 99%; }
+    fieldset.mobile-nav { display: none; width: 48%; }
+    fieldset[role=search]{ width: 99%; display: block; }
   }
   @media only screen and (min-width: 992px) {
     form {
