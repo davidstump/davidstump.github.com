@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Add A Simple Git Timesheet - David Stump</title>
+  <title>Use Git To Manage Your Time - David Stump</title>
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually &hellip;">
+  <meta name="description" content="A gem that uses your git commits to manage a Freshbooks timesheet As an extension to my git-based timesheet I wrote about at the beginning of the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/">
+  <link rel="canonical" href="http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -89,7 +89,7 @@
   
   <header>
     
-      <h1 class="entry-title">Add a Simple Git Timesheet</h1>
+      <h1 class="entry-title">Use Git to Manage Your Time</h1>
     
     
       <p class="meta">
@@ -105,38 +105,77 @@
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-02-10T16:07:00-05:00" pubdate data-updated="true">Feb 10<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
+<div class="entry-content"><p><strong>A gem that uses your git commits to manage a Freshbooks timesheet</strong></p>
 
-<p>Step 1. Edit Your bash_profile file:</p>
+<p>As an extension to my git-based timesheet I <a href="http://davidstump.net/blog/2012/12/31/add-a-simple-git-timesheet/">wrote about at the beginning of the year</a>, I went ahead and setup a self contained gem with some additional features. The gem, mytime, can be found at: <a href="http://rubygems.org/gems/mytime">rubygems.org/gems/mytime</a> as well as <a href="https://github.com/davidstump/mytime">github.com/davidstump/mytime</a> for your browsing pleasure.</p>
 
-<pre><code> $ subl ~/.bash_profile
+<p>The mytime gem uses your git commit history, in the same manner as the timesheet alias did, to pull a log of your daily activities. Once you have this daily history, you can tell mytime to &#8216;push&#8217; all of your commits as a timesheet log to Freshbooks using their API. Additionally, you can &#8216;submit&#8217; custom timesheet entries to Freshbooks as needed.</p>
+
+<p><strong>MyTime Documentation</strong></p>
+
+<p>Use your git commit history to track your time. Uses Freshbooks API.</p>
+
+<p><strong>Installation</strong></p>
+
+<p>Add this line to your application&#8217;s Gemfile:</p>
+
+<pre><code>gem 'mytime'
 </code></pre>
 
-<p>Step 2. Add an alias to your profile:</p>
+<p>And then execute:</p>
 
-<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
+<pre><code>$ bundle
 </code></pre>
 
-<p>Step 3. Save your profile</p>
+<p>Or install it yourself as:</p>
 
-<p>Step 4. Check your daily timesheet:</p>
-
-<pre><code> david:~/Projects/octopress❮source❯$ timesheet
-      2a08dac Adjust navigation mobile styles and hide search field
-      816cfef Apply custom style to site
-      b96240c Add Murky-Mussels Theme
+<pre><code>$ gem install mytime
 </code></pre>
 
-<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
+<p><strong>Usage</strong></p>
 
-<p>Cheers!<br/>
+<p>  To link to your Freshbooks account (you will need your Freshbooks username and API token):</p>
+
+<pre><code>$ mytime setup
+</code></pre>
+
+<p>  To initialize mytime in a project directory:</p>
+
+<pre><code>$ mytime init
+</code></pre>
+
+<p>  To see project details:</p>
+
+<pre><code>$ mytime project
+</code></pre>
+
+<p>  To list log:</p>
+
+<pre><code>$ mytime status
+</code></pre>
+
+<p>  To submit custom time entry:</p>
+
+<pre><code>$ mytime commit [hrs] [custom_message]
+$ mytime commit  1.5 "Add an additional note if desired"
+</code></pre>
+
+<p>  To push your git logs from today for a given project:</p>
+
+<pre><code>$ mytime push [hrs]
+$ mytime push 4.5
+</code></pre>
+
+<p>I would love some feedback and/or pull requests to extend this little gem to include other timesheets, features, etc. I made this to help myself keep track of my daily commits per project, but hopefully it helps out a few others along the way. Thanks for reading!</p>
+
+<p><strong>Cheers!</strong><br/>
 David</p>
 </div>
 
@@ -160,7 +199,7 @@ David</p>
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-02-10T16:07:00-05:00" pubdate data-updated="true">Feb 10<span>th</span>, 2013</time>
       
 
 
@@ -168,7 +207,7 @@ David</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/" >Tweet</a>
   
   
   
@@ -179,10 +218,8 @@ David</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/12/26/initial-commit/" title="Previous Post: Initial Commit.">&laquo; Initial Commit.</a>
+        <a class="basic-alignment left" href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" title="Previous Post: A Better Fullscreen Experience in Sublime">&laquo; A Better Fullscreen Experience in Sublime</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" title="Next Post: A Better Fullscreen Experience in Sublime">A Better Fullscreen Experience in Sublime &raquo;</a>
       
     </p>
   </footer>
@@ -290,8 +327,8 @@ David</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
-        var disqus_url = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_identifier = 'http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/';
+        var disqus_url = 'http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/';
         var disqus_script = 'embed.js';
       
     (function () {

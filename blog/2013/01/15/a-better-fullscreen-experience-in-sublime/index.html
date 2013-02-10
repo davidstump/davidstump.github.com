@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Add A Simple Git Timesheet - David Stump</title>
+  <title>A Better Fullscreen Experience in Sublime - David Stump</title>
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually &hellip;">
+  <meta name="description" content="While I love coding with my editor in fullscreen mode, I also enjoy having apps such as Campfire or Rdio accessible on another monitor. One complaint &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/">
+  <link rel="canonical" href="http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -89,7 +89,7 @@
   
   <header>
     
-      <h1 class="entry-title">Add a Simple Git Timesheet</h1>
+      <h1 class="entry-title">A Better Fullscreen Experience in Sublime</h1>
     
     
       <p class="meta">
@@ -105,38 +105,21 @@
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-01-15T16:09:00-05:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
+<div class="entry-content"><p>While I love coding with my editor in fullscreen mode, I also enjoy having apps such as Campfire or Rdio accessible on another monitor. One complaint I have had with the default OSX fullscreen mode is that it causes a second monitor to show nothing but the grey textured spaced background. I was thrilled the other day when I discovered a feature in Sublime that allowed me to use a &#8220;simple&#8221; fullscreen mode which behaves differently than the standard OSX mode. If you add the following to your Sublime preferences:</p>
 
-<p>Step 1. Edit Your bash_profile file:</p>
-
-<pre><code> $ subl ~/.bash_profile
+<pre><code>"use_simple_full_screen": true
 </code></pre>
 
-<p>Step 2. Add an alias to your profile:</p>
+<p>Using the Enter Full Screen shortcut will allow you to have nothing but your code on one monitor and still use your second monitor for whatever apps your heart desires. Simple preference edit that has made my work flow that much better.</p>
 
-<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
-</code></pre>
-
-<p>Step 3. Save your profile</p>
-
-<p>Step 4. Check your daily timesheet:</p>
-
-<pre><code> david:~/Projects/octopress❮source❯$ timesheet
-      2a08dac Adjust navigation mobile styles and hide search field
-      816cfef Apply custom style to site
-      b96240c Add Murky-Mussels Theme
-</code></pre>
-
-<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
-
-<p>Cheers!<br/>
+<p><strong>Cheers!</strong><br/>
 David</p>
 </div>
 
@@ -160,7 +143,7 @@ David</p>
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-01-15T16:09:00-05:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
       
 
 
@@ -168,7 +151,7 @@ David</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" >Tweet</a>
   
   
   
@@ -179,10 +162,10 @@ David</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/12/26/initial-commit/" title="Previous Post: Initial Commit.">&laquo; Initial Commit.</a>
+        <a class="basic-alignment left" href="/blog/2012/12/31/add-a-simple-git-timesheet/" title="Previous Post: Add A Simple Git Timesheet">&laquo; Add A Simple Git Timesheet</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" title="Next Post: A Better Fullscreen Experience in Sublime">A Better Fullscreen Experience in Sublime &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2013/02/10/use-git-to-manage-your-time/" title="Next Post: Use Git To Manage Your Time">Use Git To Manage Your Time &raquo;</a>
       
     </p>
   </footer>
@@ -290,8 +273,8 @@ David</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
-        var disqus_url = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_identifier = 'http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/';
+        var disqus_url = 'http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/';
         var disqus_script = 'embed.js';
       
     (function () {

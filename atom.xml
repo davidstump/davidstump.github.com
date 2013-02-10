@@ -4,7 +4,7 @@
   <title><![CDATA[David Stump]]></title>
   <link href="http://davidstump.github.com/atom.xml" rel="self"/>
   <link href="http://davidstump.github.com/"/>
-  <updated>2012-12-31T16:47:27-05:00</updated>
+  <updated>2013-02-10T16:28:55-05:00</updated>
   <id>http://davidstump.github.com/</id>
   <author>
     <name><![CDATA[David Stump]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Use Git To Manage Your Time]]></title>
+    <link href="http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time/"/>
+    <updated>2013-02-10T16:07:00-05:00</updated>
+    <id>http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time</id>
+    <content type="html"><![CDATA[<p><strong>A gem that uses your git commits to manage a Freshbooks timesheet</strong></p>
+
+<p>As an extension to my git-based timesheet I <a href="http://davidstump.net/blog/2012/12/31/add-a-simple-git-timesheet/">wrote about at the beginning of the year</a>, I went ahead and setup a self contained gem with some additional features. The gem, mytime, can be found at: <a href="http://rubygems.org/gems/mytime">rubygems.org/gems/mytime</a> as well as <a href="https://github.com/davidstump/mytime">github.com/davidstump/mytime</a> for your browsing pleasure.</p>
+
+<p>The mytime gem uses your git commit history, in the same manner as the timesheet alias did, to pull a log of your daily activities. Once you have this daily history, you can tell mytime to &#8216;push&#8217; all of your commits as a timesheet log to Freshbooks using their API. Additionally, you can &#8216;submit&#8217; custom timesheet entries to Freshbooks as needed.</p>
+
+<p><strong>MyTime Documentation</strong></p>
+
+<p>Use your git commit history to track your time. Uses Freshbooks API.</p>
+
+<p><strong>Installation</strong></p>
+
+<p>Add this line to your application&#8217;s Gemfile:</p>
+
+<pre><code>gem 'mytime'
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code>$ gem install mytime
+</code></pre>
+
+<p><strong>Usage</strong></p>
+
+<p>  To link to your Freshbooks account (you will need your Freshbooks username and API token):</p>
+
+<pre><code>$ mytime setup
+</code></pre>
+
+<p>  To initialize mytime in a project directory:</p>
+
+<pre><code>$ mytime init
+</code></pre>
+
+<p>  To see project details:</p>
+
+<pre><code>$ mytime project
+</code></pre>
+
+<p>  To list log:</p>
+
+<pre><code>$ mytime status
+</code></pre>
+
+<p>  To submit custom time entry:</p>
+
+<pre><code>$ mytime commit [hrs] [custom_message]
+$ mytime commit  1.5 "Add an additional note if desired"
+</code></pre>
+
+<p>  To push your git logs from today for a given project:</p>
+
+<pre><code>$ mytime push [hrs]
+$ mytime push 4.5
+</code></pre>
+
+<p>I would love some feedback and/or pull requests to extend this little gem to include other timesheets, features, etc. I made this to help myself keep track of my daily commits per project, but hopefully it helps out a few others along the way. Thanks for reading!</p>
+
+<p><strong>Cheers!</strong><br/>
+David</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A Better Fullscreen Experience in Sublime]]></title>
+    <link href="http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/"/>
+    <updated>2013-01-15T16:09:00-05:00</updated>
+    <id>http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime</id>
+    <content type="html"><![CDATA[<p>While I love coding with my editor in fullscreen mode, I also enjoy having apps such as Campfire or Rdio accessible on another monitor. One complaint I have had with the default OSX fullscreen mode is that it causes a second monitor to show nothing but the grey textured spaced background. I was thrilled the other day when I discovered a feature in Sublime that allowed me to use a &#8220;simple&#8221; fullscreen mode which behaves differently than the standard OSX mode. If you add the following to your Sublime preferences:</p>
+
+<pre><code>"use_simple_full_screen": true
+</code></pre>
+
+<p>Using the Enter Full Screen shortcut will allow you to have nothing but your code on one monitor and still use your second monitor for whatever apps your heart desires. Simple preference edit that has made my work flow that much better.</p>
+
+<p><strong>Cheers!</strong><br/>
+David</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Add A Simple Git Timesheet]]></title>
