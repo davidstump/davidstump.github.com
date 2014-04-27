@@ -1,10 +1,44 @@
 @import "compass";
-@include global-reset;
-@include reset-html5;
+
+@import "base";
+@import "parts";
+@import "plugins";
 
 @import "custom/colors";
+@import "yinyang";
+
 @import "custom/fonts";
 @import "custom/layout";
-@import "base";
-@import "partials";
 @import "custom/styles";
+
+.mid-col {
+  overflow: hidden;
+}
+
+.container .left-col {
+  opacity: 1;
+}
+
+.container .mid-col .mid-col-container #content {
+  width: 90%;
+}
+
+.container .mid-col .mid-col-container #content article .meta .tags {
+  display: none;
+}
+
+.container .mid-col footer.inner, .container .mid-col footer.article-inner {
+  width: 90%;
+}
+
+nav li + li a {
+  border-left: none;
+}
+
+#banner .loading {
+  display: none;
+}
+
+.profile-container hgroup h1 {
+  display: none;
+}
