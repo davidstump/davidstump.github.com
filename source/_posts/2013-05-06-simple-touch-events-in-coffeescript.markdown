@@ -23,6 +23,7 @@ for browsing on [GitHub](https://gist.github.com/davidstump/5499239)
 
 To get our class started, we will setup a few variables that will help us along the way.
 
+```coffeescript
     @Touch=
       horizontalSensitivity: 22
       verticalSensitivity: 6
@@ -30,6 +31,7 @@ To get our class started, we will setup a few variables that will help us along 
       touchDY: 0
       touchStartX: 0
       touchStartY: 0
+```
 
 The sensitivity variables allow us to specify how long a touch event should last before
 we go ahead and emit our event to the rest of the application. This helps us differentiate
@@ -37,6 +39,7 @@ between a swipe style gesture versus a simple tap. The next two variables will h
 distance travelled during our touch event. Finally, the last two will let us store the
 starting point of our event.
 
+```coffeescript
     bind: (elements...) ->
       for elem in elements
         elem.addEventListener "touchstart", (event) =>
@@ -45,23 +48,27 @@ starting point of our event.
          @handleMove(event, elem)
         elem.addEventListener "touchend", (event) =>
          @handleEnd(event, elem)
+```
 
 First we want to add a bind method to our class to attach the appropriate touch events to
 whichever DOM element (or elements) specified. This method handles one or more elements
 and attaches the touchstart, touchmove and touchend events and delegates the appropriate
 handler methods for each type.
 
+```coffeescript
     handleStart: (event, elem) ->
       if event.touches.length is 1
         @touchDX = 0
         @touchDY = 0
         @touchStartX = event.touches[0].pageX
         @touchStartY = event.touches[0].pageY
+```
 
 Once we have the events attached to the correct elements, we need to tell our class how to
 handle the various event types along the way. Here we store our initial values once the touch
 event is initially registered.
 
+```coffeescript
     handleMove: (event, elem) ->
       if event.touches.length > 1
         @cancelTouch(elem)
@@ -69,12 +76,14 @@ event is initially registered.
 
       @touchDX = event.touches[0].pageX - @touchStartX
       @touchDY = event.touches[0].pageY - @touchStartY
+```
 
 Next we need a method fired during the portion of the touch event where our finger is moving
 across the screen. During this event we want to detect if another touch event is registered
 and reset our listeners to avoid complications. We also want to update our two variables
 tasked with telling us the distance our touch event has travelled.
 
+```coffeescript
     handleEnd: (event,elem) ->
       dx = Math.abs(@touchDX)
       dy = Math.abs(@touchDY)
@@ -87,6 +96,7 @@ tasked with telling us the distance our touch event has travelled.
 
       @cancelTouch(event, elem)
       false
+```
 
 Once a touchend event is triggered and the gesture is complete, we need to gather the total
 distance travelled both horizontally and vertically. Once we have these values, we can use our
@@ -95,10 +105,12 @@ to the rest of our application. We can also use the positive or negative value o
 our difference/distance variable to indicate the specific direction of our event and emit the
 correct notification.
 
+```coffeescript
     emitSlideLeft: -> @emit 'swipe:left'
     emitSlideRight: -> @emit 'swipe:right'
     emitSlideUp: -> @emit 'swipe:up'
     emitSlideDown: -> @emit 'swipe:down'
+```
 
 Finally, once we have successfully registered a touch event and determined that it passes
 our sensitivity threshold set initially, we need to emit the correct event to our application.
@@ -107,12 +119,16 @@ event notification with very little code.
 
 With our new touch class, we can now bind touch events to any elements in our application.
 
+```coffeescript
     Touch.bind document.getElementById('menu')
+```
 
 Once we have our bindings set, performing actions based our touch events is as easy as calling
 a method when a touch event is detected.
 
+```coffeescript
     Touch.on 'swipe:left', => @toggleMenu()
+```
 
 While this class certainly doesn't handle every possible interaction on a handheld or tablet
 device, it does provide you with a great base for handling basic touch events throughout your

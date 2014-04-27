@@ -57,11 +57,13 @@ categories:
   @ThingSvc, etc). Once the dependencies are handled, the NGObject class will
   check for an init() function and call it if one exists.
 
+```coffeescript
     class @NGObject
       constructor: (dependencies...) ->
         for dependency, index in @constructor.$inject
           @[dependency.replace('$', '')] = dependencies[index]
         @init?()
+```
 
   Next, I use that NGObject base class to build a variety of other classes to
   handle specific angular object types such as NGController, NGService, etc.
@@ -71,6 +73,7 @@ categories:
   proper scope. This allows us access to the attributes and functions of any
   object in the view layer.
 
+```coffeescript
     class @NGController extends @NGObject
       @register: (app) ->
         app.controller "#{@name}", this
@@ -78,6 +81,7 @@ categories:
       constructor: (@scope) ->
         @scope[key] = value for key, value of this when !@scope[key]?
         super
+```
 
   Specifically for service objects, we setup an NGService object that implements
   event notifications allowing controllers, directives, etc to register callbacks
@@ -85,6 +89,7 @@ categories:
   `notify` function and inform all registered observers that the specific event
   occurred.
 
+```coffeescript
     class @NGService extends @NGObject
       @register: (app) -> app.service "#{@name}", this
 
@@ -97,18 +102,24 @@ categories:
       notify: (event_name, data = {}) ->
         angular.forEach @observableCallbacks[event_name], (callback) ->
           callback(data)
+```
 
   We use an event_name for each event type which adds the ability to sanely
   register and call multiple events explicitly as so:
 
+```coffeescript
     handleEvent: -> notify 'my:event'
+```
 
+```coffeescript
     MyService.on 'my:event', -> doStuff()
+```
 
   Included in my Rails projects, this helper allow me to write concise and
   legible angular code in my preferred CoffeeScript class syntax. Here is a short
   example of a rewritten Angular controller with the new syntax and format:
 
+```coffeescript
     class CalendarCtrl extends @NGController
       @register window.App
 
@@ -120,6 +131,7 @@ categories:
 
       init: ->
         @config = @Calendar.config()
+```
 
   Is there anything explicitly problematic or wrong about the verbose
   traditional Angular syntax? Absolutely not! Does this syntax make me a happier
@@ -147,6 +159,7 @@ categories:
   Brewery. To wire up Angular with these resources using Rails Resource I could
   write an Angular factory such as:
 
+```coffeescript
     App.factory "Beer", ['railsResourceFactory', 'railsSerializer', (railsResourceFactory, railsSerializer) ->
       resource = railsResourceFactory
         url: "/beers"
@@ -154,13 +167,16 @@ categories:
         serializer: railsSerializer ->
           @nestedAttribute 'brewery'
     ]
+```
 
   This code creates an Angular resource 'Beer' and maps it to the appropriate
   endpoints in our Rails application. Our next step is to setup the association
   with the Brewery model. You can see this done above with the following lines:
 
+```coffeescript
       serializer: railsSerializer ->
         @nestedAttribute 'brewery'
+```
 
   The serializer in Rails Resource looks to be quite powerful in allowing you to
   both specify relationships and alter the json coming and going to resource
@@ -170,10 +186,12 @@ categories:
   are just what Rails expects and is handled easily by a traditional Rails
   create action.
 
+```ruby
     Started POST "/beers" for 127.0.0.1
     Processing by BeersController#create as JSON
     Parameters: {"beer"=>{"name"=>"Goose Island IPA", "description"=>"Hoppy Goodness",
                  "brewery_attributes"=>{"name"=>"Goose Island"}}}
+```
 
 ## The Result
 
@@ -189,6 +207,7 @@ categories:
   of the factory shown above, the only Javascript required was a short and sweet
   Angular controller:
 
+```coffeescript
     class BeersCtrl extends @NGController
       @register window.App
 
@@ -211,6 +230,7 @@ categories:
       destroy: (beer_id) ->
         @Beer.$delete(@Beer.resourceUrl(beer_id)).then (results) =>
           @loadBeers()
+```
 
   This style of Angular fits seamlessly into my familiar mental
   model formed from my time developing Rails applications and ultimately makes
