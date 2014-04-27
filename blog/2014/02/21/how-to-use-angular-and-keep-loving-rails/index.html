@@ -1,0 +1,538 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How To Use Angular and Keep Loving Rails - David Stump</title>
+  <meta name="author" content="David Stump">
+
+  
+  <meta name="description" content="This article was originally published at Littlelines. My Approach I love writing Ruby and I love using Rails. So when I started looking for a client- &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="David Stump" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic|Istok+Web:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37247497-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body>
+  <div id="header-container">
+    <div id="header">
+      <div class="wrapper">
+        <header role="banner"><hgroup>
+  <h1>
+    <a href="/">
+      <img src="/images/avatar.jpg" alt="David Stump" id="avatar" />
+      David Stump
+    </a>
+  </h1>
+</hgroup>
+
+</header>
+        <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:davidstump.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://www.linkedin.com/in/davidstump/" target="_blank">Profile</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+      </div>
+    </div>
+  </div>
+  <div id="body"   >
+    <div id="main">
+      <div id="content">
+	<div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Use Angular and Keep Loving Rails</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-21T20:37:00Z" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/02/21/how_to_use_angularjs_and_keep_loving_rails/">Littlelines</a>.</em></p>
+
+<h2>My Approach</h2>
+
+<p>  I love writing Ruby and I love using Rails. So when I started looking for a
+  client-side framework to help organize my front-end process and code, I was
+  cautious of frameworks that demanded I abandon my &#8220;Rails Way&#8221; and adopt their
+  process, style, and approach. I was looking for a framework that added value to
+  my &#8220;Rails App&#8221;, not a solution that wanted Rails to instead act as a
+  compliment to my client-side app.</p>
+
+<p>  Enter Angular stage left.</p>
+
+<p>  But wait, you say, tons of Angular apps use Rails (or any other framework) as
+  a backend api for their purely client-side application. Yes, you would be very
+  correct, however, unlike numerous other client-side frameworks, Angular allows
+  me to easily and quickly sprinkle it on top of my traditional Rails app if
+  that&#8217;s my preference.</p>
+
+<p>  <strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
+  Rails developer while still enjoying all the advantages Angular provides.
+  If, in your heart, you want nothing more than to make purely client-side apps
+  every day, then more power to you for being focused. Thanks for reading this
+  far - and please accept my <strong><a href="http://f.cl.ly/items/3c340s340q3d3q3X0I0h/corgis.gif">token of thanks</a></strong>.</p>
+
+<p>  My happy-place with Angular and Rails is to let each framework do what it&#8217;s
+  good at and then move aside. For Rails, it is well suited to handle routing,
+  helpers and primary application logic. For Angular, it is best suited to
+  handle client-side interactions, dynamic bindings, ajax requests and
+  presentation logic. Using this approach I can stay away from so many headaches
+  caused by Angular routing, Rails remote linking and endless arbitrary jQuery
+  listeners.</p>
+
+<p>  Once I had settled on an approach to co-existence of Angular and Rails, my next
+  obstacle was the somewhat verbose and obscure Angular syntax.</p>
+
+<h2>CoffeeScript Sanity</h2>
+
+<p>  Personally, I love using CoffeeScript (through that is in no way required to
+  enjoy Angular on Rails) and my first step in incorporating Angular into my
+  daily Rails flow was to get a handle on some of the more obtuse Angular syntax
+  in favor of the CoffeeScript class approach.</p>
+
+<p>  The first step was to create a base class (NGObject) to handle basic
+  dependency injection. This class iterates through the array of dependencies
+  passed via the class @$inject variable and creates an instance variable with
+  the same name. This gives us the ability to easily reference scope, services,
+  etc passed into our angular object by friendly means (@scope, @Thing,
+  @ThingSvc, etc). Once the dependencies are handled, the NGObject class will
+  check for an init() function and call it if one exists.</p>
+
+<pre><code>class @NGObject
+  constructor: (dependencies...) -&gt;
+    for dependency, index in @constructor.$inject
+      @[dependency.replace('$', '')] = dependencies[index]
+    @init?()
+</code></pre>
+
+<p>  Next, I use that NGObject base class to build a variety of other classes to
+  handle specific angular object types such as NGController, NGService, etc.
+  Each of these classes exposes a register function that wires up our object to
+  the correct angular application. During object construction, we take the
+  attributes of a given object (controller, service) and apply them to the
+  proper scope. This allows us access to the attributes and functions of any
+  object in the view layer.</p>
+
+<pre><code>class @NGController extends @NGObject
+  @register: (app) -&gt;
+    app.controller "#{@name}", this
+
+  constructor: (@scope) -&gt;
+    @scope[key] = value for key, value of this when !@scope[key]?
+    super
+</code></pre>
+
+<p>  Specifically for service objects, we setup an NGService object that implements
+  event notifications allowing controllers, directives, etc to register callbacks
+  for specific service events. In the service, whenever desired, you can call the
+  <code>notify</code> function and inform all registered observers that the specific event
+  occurred.</p>
+
+<pre><code>class @NGService extends @NGObject
+  @register: (app) -&gt; app.service "#{@name}", this
+
+  observableCallbacks: {}
+
+  on: (event_name, callback) -&gt;
+    @observableCallbacks[event_name] ?= []
+    @observableCallbacks[event_name].push callback
+
+  notify: (event_name, data = {}) -&gt;
+    angular.forEach @observableCallbacks[event_name], (callback) -&gt;
+      callback(data)
+</code></pre>
+
+<p>  We use an event_name for each event type which adds the ability to sanely
+  register and call multiple events explicitly as so:</p>
+
+<pre><code>handleEvent: -&gt; notify 'my:event'
+
+MyService.on 'my:event', -&gt; doStuff()
+</code></pre>
+
+<p>  Included in my Rails projects, this helper allow me to write concise and
+  legible angular code in my preferred CoffeeScript class syntax. Here is a short
+  example of a rewritten Angular controller with the new syntax and format:</p>
+
+<pre><code>class CalendarCtrl extends @NGController
+  @register window.App
+
+  @$inject: [
+    '$scope',
+    'Calendar',
+    'Panel',
+  ]
+
+  init: -&gt;
+    @config = @Calendar.config()
+</code></pre>
+
+<p>  Is there anything explicitly problematic or wrong about the verbose
+  traditional Angular syntax? Absolutely not! Does this syntax make me a happier
+  developer and allow me to get my code out the door quicker? Without a doubt.
+  Setting up this syntax was a fun endeavor and my hope is it makes at least one
+  other developer&#8217;s life happier!</p>
+
+<h2>Rails Resource To The Rescue</h2>
+
+<p>  One of the last remaining hurdles to quick and easy angular development with
+  rails is wiring up Rails resources with Angular. One source of frustration is
+  Angular&#8217;s handling (or lack thereof) of nested resource parameters. Here are a few
+  recent GitHub issues as examples of that frustration <strong><a href="https://github.com/angular/angular.js/pull/1640">fix(ngResource): Add support for nested params</a></strong>
+  and <strong><a href="https://github.com/angular/angular.js/issues/3740">Query params not serializes as expected</a></strong>.
+  Thankfully, Angular uses a modular approach to resource handling, so swapping
+  ngResource with a different library is a breeze.</p>
+
+<p>  After months of massaging the flat params from Angular in my Rails controllers, I
+  stumbled across <strong><a href="https://github.com/FineLinePrototyping/angularjs-rails-resource">Rails Resource</a></strong>.
+  Rails Resource is a promise based resource module that handles Angular resources
+  exactly as a default Rails application would expect. With very little code, we
+  can wire up Angular with our Rails resource and be on our way.</p>
+
+<p>  As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
+  Brewery. To wire up Angular with these resources using Rails Resource I could
+  write an Angular factory such as:</p>
+
+<pre><code>App.factory "Beer", ['railsResourceFactory', 'railsSerializer', (railsResourceFactory, railsSerializer) -&gt;
+  resource = railsResourceFactory
+    url: "/beers"
+    name: "beer"
+    serializer: railsSerializer -&gt;
+      @nestedAttribute 'brewery'
+]
+</code></pre>
+
+<p>  This code creates an Angular resource &#8216;Beer&#8217; and maps it to the appropriate
+  endpoints in our Rails application. Our next step is to setup the association
+  with the Brewery model. You can see this done above with the following lines:</p>
+
+<pre><code>  serializer: railsSerializer -&gt;
+    @nestedAttribute 'brewery'
+</code></pre>
+
+<p>  The serializer in Rails Resource looks to be quite powerful in allowing you to
+  both specify relationships and alter the json coming and going to resource
+  endpoints. The factory we have created above sets up a Beer resource in Angular
+  that <code>accepts_nested_attributes_for</code> a Brewery resource. With only the code
+  demonstrated above, the parameters sent to the logs on a create action (for example)
+  are just what Rails expects and is handled easily by a traditional Rails
+  create action.</p>
+
+<pre><code>Started POST "/beers" for 127.0.0.1
+Processing by BeersController#create as JSON
+Parameters: {"beer"=&gt;{"name"=&gt;"Goose Island IPA", "description"=&gt;"Hoppy Goodness",
+             "brewery_attributes"=&gt;{"name"=&gt;"Goose Island"}}}
+</code></pre>
+
+<h2>The Result</h2>
+
+<p>  During this article I have described three tools I use to make me a happier Rails
+  developer leveraging the power of AngularJS in my applications:</p>
+
+<ol>
+<li>Letting each framework handle what it&#8217;s good at</li>
+<li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
+<li>A resource module that wires up Rails resources with ease</li>
+</ol>
+
+
+<p>  Using these methods I setup a very basic CRUD Rails application on Github
+  <strong><a href="http://github.com/davidstump/beers">davidstump/beers</a></strong>. With the exception
+  of the factory shown above, the only Javascript required was a short and sweet
+  Angular controller:</p>
+
+<pre><code>class BeersCtrl extends @NGController
+  @register window.App
+
+  @$inject: [
+    '$scope',
+    'Beer'
+  ]
+
+  init: -&gt;
+    @loadBeers()
+
+  loadBeers: -&gt;
+    @Beer.query().then (results) =&gt;
+      @all = results
+
+  create: -&gt;
+    new @Beer(@newBeer).create().then (results) =&gt;
+      @loadBeers()
+
+  destroy: (beer_id) -&gt;
+    @Beer.$delete(@Beer.resourceUrl(beer_id)).then (results) =&gt;
+      @loadBeers()
+</code></pre>
+
+<p>  This style of Angular fits seamlessly into my familiar mental
+  model formed from my time developing Rails applications and ultimately makes
+  me a quicker, happier and healthier developer.</p>
+
+<p>  I would love any and all feedback (and Pull Requests) on both these approaches
+  as well as the NGHelper library itself. Thank you for taking the time to read
+  through my thoughts and happy coding!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">David Stump</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-21T20:37:00Z" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/06/simple-touch-events-in-coffeescript/" title="Previous Post: Simple Touch Events in CoffeeScript">&laquo; Simple Touch Events in CoffeeScript</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/" title="Next Post: Fun with Variants and Enums in Rails 4.1">Fun with Variants and Enums in Rails 4.1 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">Fun with Variants and Enums in Rails 4.1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/">How To Use Angular and Keep Loving Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/simple-touch-events-in-coffeescript/">Simple Touch Events in CoffeeScript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/10/use-git-to-manage-your-time/">Use Git To Manage Your Time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/">A Better Fullscreen Experience in Sublime</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/davidstump">@davidstump</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'davidstump',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("davidstump", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/davidstump" class="twitter-follow-button" data-show-count="false">Follow @davidstump</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+      </div>
+    </div>
+    <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - David Stump -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
+</p>
+
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'davidstump';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/';
+        var disqus_url = 'http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+  </div>
+</body>
+</html>

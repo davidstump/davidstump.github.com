@@ -9,7 +9,7 @@
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="A gem that uses your git commits to manage a Freshbooks timesheet As an extension to my git-based timesheet I wrote about at the beginning of the &hellip;">
+  <meta name="description" content="This article was originally published at Littlelines. The release of Rails 4.1 this past week included some cool new features two of which are the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -86,6 +86,523 @@
       <div id="content">
 	<div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">Fun With Variants and Enums in Rails 4.1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-21T09:51:00Z" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/04/21/fun_with_variants_and_enums_in_rails_4_1/">Littlelines</a>.</em></p>
+
+<p>The release of Rails 4.1 this past week included some <a href="http://weblog.rubyonrails.org/2014/4/8/Rails-4-1/">cool new features</a> two of which are the introduction of enums and variants. Enums give us some syntatic sugar for handling attributes like status, role, etc. Variants allow us to handle separate types of templates from within a respond_to block on a given action. I setup a <a href="https://github.com/davidstump/enums_and_variants">tiny Rails 4.1 application</a> to demonstrate one possible use for these two new features.</p>
+
+<p><strong>Enum</strong></p>
+
+<p>This application has a basic user model with a name string and an email string. The users controller contains basic index and show actions to show a list to users and their respective details. In the user model, I included an enum attribute <code>role</code> to handle differentiating between users of different types (student, admin or staff). The basic way of defining an enum attribute is as follows:</p>
+
+<pre><code>enum role: [:student, :admin, :staff]
+</code></pre>
+
+<p>However, with enums used in this fashion, order must always be maintained or you risk recasting your users with a new role unintentionally. Suppose, months later, a new developer comes along and adjusts the code above like so:</p>
+
+<pre><code>enum role: [:golfer, :student, :admin, :staff]
+</code></pre>
+
+<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops.</p>
+
+<p>For this reason I would most likely use explicitly defined enums to avoid any potential future mishaps:</p>
+
+<pre><code>enum role: {student: 0, admin: 1, staff: 2}
+</code></pre>
+
+<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm.</p>
+
+<p>Once I have my enum defined, I now have access to all kinds of goodies to use throughout my application. I can now easily determine a given users role:</p>
+
+<pre><code>user.role # =&gt; "student"
+</code></pre>
+
+<p>I can easily determine if a user is a member of a particular role:</p>
+
+<pre><code>user.student? # =&gt; true
+</code></pre>
+
+<p>I can quickly assign/update a user&#8217;s role:</p>
+
+<pre><code>user.staff! # =&gt; [sql] true
+</code></pre>
+
+<p>Or see all of the users scoped to a particular role:</p>
+
+<pre><code>User.staff # =&gt; #&lt;ActiveRecord::Relation []&gt;
+</code></pre>
+
+<p><strong>Variants</strong></p>
+
+<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user&#8217;s role.</p>
+
+<pre><code>def show
+  @user = User.find(params[:id])
+  request.variant = @user.role.to_sym
+  respond_to do |format|
+    format.html do |html|
+      html.student
+      html.staff
+      html.admin
+    end
+  end
+end
+</code></pre>
+
+<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc.</p>
+
+<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user&#8217;s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
+
+<p>Cheers!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/">How to Use Angular and Keep Loving Rails</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-21T20:37:00Z" pubdate data-updated="true">Feb 21<span>st</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/02/21/how_to_use_angularjs_and_keep_loving_rails/">Littlelines</a>.</em></p>
+
+<h2>My Approach</h2>
+
+<p>  I love writing Ruby and I love using Rails. So when I started looking for a
+  client-side framework to help organize my front-end process and code, I was
+  cautious of frameworks that demanded I abandon my &#8220;Rails Way&#8221; and adopt their
+  process, style, and approach. I was looking for a framework that added value to
+  my &#8220;Rails App&#8221;, not a solution that wanted Rails to instead act as a
+  compliment to my client-side app.</p>
+
+<p>  Enter Angular stage left.</p>
+
+<p>  But wait, you say, tons of Angular apps use Rails (or any other framework) as
+  a backend api for their purely client-side application. Yes, you would be very
+  correct, however, unlike numerous other client-side frameworks, Angular allows
+  me to easily and quickly sprinkle it on top of my traditional Rails app if
+  that&#8217;s my preference.</p>
+
+<p>  <strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
+  Rails developer while still enjoying all the advantages Angular provides.
+  If, in your heart, you want nothing more than to make purely client-side apps
+  every day, then more power to you for being focused. Thanks for reading this
+  far - and please accept my <strong><a href="http://f.cl.ly/items/3c340s340q3d3q3X0I0h/corgis.gif">token of thanks</a></strong>.</p>
+
+<p>  My happy-place with Angular and Rails is to let each framework do what it&#8217;s
+  good at and then move aside. For Rails, it is well suited to handle routing,
+  helpers and primary application logic. For Angular, it is best suited to
+  handle client-side interactions, dynamic bindings, ajax requests and
+  presentation logic. Using this approach I can stay away from so many headaches
+  caused by Angular routing, Rails remote linking and endless arbitrary jQuery
+  listeners.</p>
+
+<p>  Once I had settled on an approach to co-existence of Angular and Rails, my next
+  obstacle was the somewhat verbose and obscure Angular syntax.</p>
+
+<h2>CoffeeScript Sanity</h2>
+
+<p>  Personally, I love using CoffeeScript (through that is in no way required to
+  enjoy Angular on Rails) and my first step in incorporating Angular into my
+  daily Rails flow was to get a handle on some of the more obtuse Angular syntax
+  in favor of the CoffeeScript class approach.</p>
+
+<p>  The first step was to create a base class (NGObject) to handle basic
+  dependency injection. This class iterates through the array of dependencies
+  passed via the class @$inject variable and creates an instance variable with
+  the same name. This gives us the ability to easily reference scope, services,
+  etc passed into our angular object by friendly means (@scope, @Thing,
+  @ThingSvc, etc). Once the dependencies are handled, the NGObject class will
+  check for an init() function and call it if one exists.</p>
+
+<pre><code>class @NGObject
+  constructor: (dependencies...) -&gt;
+    for dependency, index in @constructor.$inject
+      @[dependency.replace('$', '')] = dependencies[index]
+    @init?()
+</code></pre>
+
+<p>  Next, I use that NGObject base class to build a variety of other classes to
+  handle specific angular object types such as NGController, NGService, etc.
+  Each of these classes exposes a register function that wires up our object to
+  the correct angular application. During object construction, we take the
+  attributes of a given object (controller, service) and apply them to the
+  proper scope. This allows us access to the attributes and functions of any
+  object in the view layer.</p>
+
+<pre><code>class @NGController extends @NGObject
+  @register: (app) -&gt;
+    app.controller "#{@name}", this
+
+  constructor: (@scope) -&gt;
+    @scope[key] = value for key, value of this when !@scope[key]?
+    super
+</code></pre>
+
+<p>  Specifically for service objects, we setup an NGService object that implements
+  event notifications allowing controllers, directives, etc to register callbacks
+  for specific service events. In the service, whenever desired, you can call the
+  <code>notify</code> function and inform all registered observers that the specific event
+  occurred.</p>
+
+<pre><code>class @NGService extends @NGObject
+  @register: (app) -&gt; app.service "#{@name}", this
+
+  observableCallbacks: {}
+
+  on: (event_name, callback) -&gt;
+    @observableCallbacks[event_name] ?= []
+    @observableCallbacks[event_name].push callback
+
+  notify: (event_name, data = {}) -&gt;
+    angular.forEach @observableCallbacks[event_name], (callback) -&gt;
+      callback(data)
+</code></pre>
+
+<p>  We use an event_name for each event type which adds the ability to sanely
+  register and call multiple events explicitly as so:</p>
+
+<pre><code>handleEvent: -&gt; notify 'my:event'
+
+MyService.on 'my:event', -&gt; doStuff()
+</code></pre>
+
+<p>  Included in my Rails projects, this helper allow me to write concise and
+  legible angular code in my preferred CoffeeScript class syntax. Here is a short
+  example of a rewritten Angular controller with the new syntax and format:</p>
+
+<pre><code>class CalendarCtrl extends @NGController
+  @register window.App
+
+  @$inject: [
+    '$scope',
+    'Calendar',
+    'Panel',
+  ]
+
+  init: -&gt;
+    @config = @Calendar.config()
+</code></pre>
+
+<p>  Is there anything explicitly problematic or wrong about the verbose
+  traditional Angular syntax? Absolutely not! Does this syntax make me a happier
+  developer and allow me to get my code out the door quicker? Without a doubt.
+  Setting up this syntax was a fun endeavor and my hope is it makes at least one
+  other developer&#8217;s life happier!</p>
+
+<h2>Rails Resource To The Rescue</h2>
+
+<p>  One of the last remaining hurdles to quick and easy angular development with
+  rails is wiring up Rails resources with Angular. One source of frustration is
+  Angular&#8217;s handling (or lack thereof) of nested resource parameters. Here are a few
+  recent GitHub issues as examples of that frustration <strong><a href="https://github.com/angular/angular.js/pull/1640">fix(ngResource): Add support for nested params</a></strong>
+  and <strong><a href="https://github.com/angular/angular.js/issues/3740">Query params not serializes as expected</a></strong>.
+  Thankfully, Angular uses a modular approach to resource handling, so swapping
+  ngResource with a different library is a breeze.</p>
+
+<p>  After months of massaging the flat params from Angular in my Rails controllers, I
+  stumbled across <strong><a href="https://github.com/FineLinePrototyping/angularjs-rails-resource">Rails Resource</a></strong>.
+  Rails Resource is a promise based resource module that handles Angular resources
+  exactly as a default Rails application would expect. With very little code, we
+  can wire up Angular with our Rails resource and be on our way.</p>
+
+<p>  As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
+  Brewery. To wire up Angular with these resources using Rails Resource I could
+  write an Angular factory such as:</p>
+
+<pre><code>App.factory "Beer", ['railsResourceFactory', 'railsSerializer', (railsResourceFactory, railsSerializer) -&gt;
+  resource = railsResourceFactory
+    url: "/beers"
+    name: "beer"
+    serializer: railsSerializer -&gt;
+      @nestedAttribute 'brewery'
+]
+</code></pre>
+
+<p>  This code creates an Angular resource &#8216;Beer&#8217; and maps it to the appropriate
+  endpoints in our Rails application. Our next step is to setup the association
+  with the Brewery model. You can see this done above with the following lines:</p>
+
+<pre><code>  serializer: railsSerializer -&gt;
+    @nestedAttribute 'brewery'
+</code></pre>
+
+<p>  The serializer in Rails Resource looks to be quite powerful in allowing you to
+  both specify relationships and alter the json coming and going to resource
+  endpoints. The factory we have created above sets up a Beer resource in Angular
+  that <code>accepts_nested_attributes_for</code> a Brewery resource. With only the code
+  demonstrated above, the parameters sent to the logs on a create action (for example)
+  are just what Rails expects and is handled easily by a traditional Rails
+  create action.</p>
+
+<pre><code>Started POST "/beers" for 127.0.0.1
+Processing by BeersController#create as JSON
+Parameters: {"beer"=&gt;{"name"=&gt;"Goose Island IPA", "description"=&gt;"Hoppy Goodness",
+             "brewery_attributes"=&gt;{"name"=&gt;"Goose Island"}}}
+</code></pre>
+
+<h2>The Result</h2>
+
+<p>  During this article I have described three tools I use to make me a happier Rails
+  developer leveraging the power of AngularJS in my applications:</p>
+
+<ol>
+<li>Letting each framework handle what it&#8217;s good at</li>
+<li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
+<li>A resource module that wires up Rails resources with ease</li>
+</ol>
+
+
+<p>  Using these methods I setup a very basic CRUD Rails application on Github
+  <strong><a href="http://github.com/davidstump/beers">davidstump/beers</a></strong>. With the exception
+  of the factory shown above, the only Javascript required was a short and sweet
+  Angular controller:</p>
+
+<pre><code>class BeersCtrl extends @NGController
+  @register window.App
+
+  @$inject: [
+    '$scope',
+    'Beer'
+  ]
+
+  init: -&gt;
+    @loadBeers()
+
+  loadBeers: -&gt;
+    @Beer.query().then (results) =&gt;
+      @all = results
+
+  create: -&gt;
+    new @Beer(@newBeer).create().then (results) =&gt;
+      @loadBeers()
+
+  destroy: (beer_id) -&gt;
+    @Beer.$delete(@Beer.resourceUrl(beer_id)).then (results) =&gt;
+      @loadBeers()
+</code></pre>
+
+<p>  This style of Angular fits seamlessly into my familiar mental
+  model formed from my time developing Rails applications and ultimately makes
+  me a quicker, happier and healthier developer.</p>
+
+<p>  I would love any and all feedback (and Pull Requests) on both these approaches
+  as well as the NGHelper library itself. Thank you for taking the time to read
+  through my thoughts and happy coding!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/06/simple-touch-events-in-coffeescript/">Simple Touch Events in CoffeeScript</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-06T00:01:00Z" pubdate data-updated="true">May 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2013/05/06/simple-touch-events-in-coffeescript/">Littlelines</a>.</em></p>
+
+<p>I am an avid fan of simple, clean and elegant CoffeeScript (and thus JavaScript of course).
+On top of your code being more approachable, I love the sense of accomplishment when
+I find a clean way to solve a problem without immediately jumping to an external
+library or plugin. Thus, when I was faced with the problem of handling touch
+events on handheld and tablet devices for our new site, I started with a
+blank page in my favorite editor.</p>
+
+<p>Touch.coffee is a simple and straightforward CoffeeScript class written
+with pure JavaScript that emits touch events to your application. The only
+dependency this class utilizes is <a href="https://github.com/Wolfy87/EventEmitter">EventEmitter</a>
+to aid in handling the event triggers. The full source for this class is available
+for browsing on <a href="https://gist.github.com/davidstump/5499239">GitHub</a></p>
+
+<p>To get our class started, we will setup a few variables that will help us along the way.</p>
+
+<pre><code>@Touch=
+  horizontalSensitivity: 22
+  verticalSensitivity: 6
+  touchDX: 0
+  touchDY: 0
+  touchStartX: 0
+  touchStartY: 0
+</code></pre>
+
+<p>The sensitivity variables allow us to specify how long a touch event should last before
+we go ahead and emit our event to the rest of the application. This helps us differentiate
+between a swipe style gesture versus a simple tap. The next two variables will help us gauge the
+distance travelled during our touch event. Finally, the last two will let us store the
+starting point of our event.</p>
+
+<pre><code>bind: (elements...) -&gt;
+  for elem in elements
+    elem.addEventListener "touchstart", (event) =&gt;
+     @handleStart(event, elem)
+    elem.addEventListener "touchmove", (event) =&gt;
+     @handleMove(event, elem)
+    elem.addEventListener "touchend", (event) =&gt;
+     @handleEnd(event, elem)
+</code></pre>
+
+<p>First we want to add a bind method to our class to attach the appropriate touch events to
+whichever DOM element (or elements) specified. This method handles one or more elements
+and attaches the touchstart, touchmove and touchend events and delegates the appropriate
+handler methods for each type.</p>
+
+<pre><code>handleStart: (event, elem) -&gt;
+  if event.touches.length is 1
+    @touchDX = 0
+    @touchDY = 0
+    @touchStartX = event.touches[0].pageX
+    @touchStartY = event.touches[0].pageY
+</code></pre>
+
+<p>Once we have the events attached to the correct elements, we need to tell our class how to
+handle the various event types along the way. Here we store our initial values once the touch
+event is initially registered.</p>
+
+<pre><code>handleMove: (event, elem) -&gt;
+  if event.touches.length &gt; 1
+    @cancelTouch(elem)
+    return false
+
+  @touchDX = event.touches[0].pageX - @touchStartX
+  @touchDY = event.touches[0].pageY - @touchStartY
+</code></pre>
+
+<p>Next we need a method fired during the portion of the touch event where our finger is moving
+across the screen. During this event we want to detect if another touch event is registered
+and reset our listeners to avoid complications. We also want to update our two variables
+tasked with telling us the distance our touch event has travelled.</p>
+
+<pre><code>handleEnd: (event,elem) -&gt;
+  dx = Math.abs(@touchDX)
+  dy = Math.abs(@touchDY)
+
+  if (dx &gt; @horizontalSensitivity) and (dy &lt; (dx * 2 / 3))
+    if @touchDX &gt; 0 then @emitSlideRight() else @emitSlideLeft()
+
+  if (dy &gt; @verticalSensitivity) and (dx &lt; (dy * 2 / 3))
+    if @touchDY &gt; 0 then @emitSlideDown() else @emitSlideUp()
+
+  @cancelTouch(event, elem)
+  false
+</code></pre>
+
+<p>Once a touchend event is triggered and the gesture is complete, we need to gather the total
+distance travelled both horizontally and vertically. Once we have these values, we can use our
+sensitivity variables to determine if the distance of the event is great enough to warrant emitting
+to the rest of our application. We can also use the positive or negative value of
+our difference/distance variable to indicate the specific direction of our event and emit the
+correct notification.</p>
+
+<pre><code>emitSlideLeft: -&gt; @emit 'swipe:left'
+emitSlideRight: -&gt; @emit 'swipe:right'
+emitSlideUp: -&gt; @emit 'swipe:up'
+emitSlideDown: -&gt; @emit 'swipe:down'
+</code></pre>
+
+<p>Finally, once we have successfully registered a touch event and determined that it passes
+our sensitivity threshold set initially, we need to emit the correct event to our application.
+Using <a href="https://github.com/Wolfy87/EventEmitter">EventEmitter</a> we can easily send out the proper
+event notification with very little code.</p>
+
+<p>With our new touch class, we can now bind touch events to any elements in our application.</p>
+
+<pre><code>Touch.bind document.getElementById('menu')
+</code></pre>
+
+<p>Once we have our bindings set, performing actions based our touch events is as easy as calling
+a method when a touch event is detected.</p>
+
+<pre><code>Touch.on 'swipe:left', =&gt; @toggleMenu()
+</code></pre>
+
+<p>While this class certainly doesn&#8217;t handle every possible interaction on a handheld or tablet
+device, it does provide you with a great base for handling basic touch events throughout your
+application with very little code. I welcome and look forward to any and all feedback, suggestions
+and improvements and hope this little class proves helpful!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -350,19 +867,23 @@ David</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">Fun with Variants and Enums in Rails 4.1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/">How To Use Angular and Keep Loving Rails</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/simple-touch-events-in-coffeescript/">Simple Touch Events in CoffeeScript</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/10/use-git-to-manage-your-time/">Use Git To Manage Your Time</a>
       </li>
     
       <li class="post">
         <a href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/">A Better Fullscreen Experience in Sublime</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/31/add-a-simple-git-timesheet/">Add A Simple Git Timesheet</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/26/initial-commit/">Initial Commit.</a>
       </li>
     
   </ul>
@@ -424,7 +945,7 @@ David</p>
       </div>
     </div>
     <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - David Stump -
+  Copyright &copy; 2014 - David Stump -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
 </p>
 

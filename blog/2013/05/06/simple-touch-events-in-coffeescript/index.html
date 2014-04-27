@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Add A Simple Git Timesheet - David Stump</title>
+  <title>Simple Touch Events in CoffeeScript - David Stump</title>
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually &hellip;">
+  <meta name="description" content="This article was originally published at Littlelines. I am an avid fan of simple, clean and elegant CoffeeScript (and thus JavaScript of course).
+On &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/">
+  <link rel="canonical" href="http://davidstump.github.com/blog/2013/05/06/simple-touch-events-in-coffeescript/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -89,7 +90,7 @@
   
   <header>
     
-      <h1 class="entry-title">Add a Simple Git Timesheet</h1>
+      <h1 class="entry-title">Simple Touch Events in CoffeeScript</h1>
     
     
       <p class="meta">
@@ -105,39 +106,133 @@
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-05-06T00:01:00Z" pubdate data-updated="true">May 6<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
+<div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2013/05/06/simple-touch-events-in-coffeescript/">Littlelines</a>.</em></p>
 
-<p>Step 1. Edit Your bash_profile file:</p>
+<p>I am an avid fan of simple, clean and elegant CoffeeScript (and thus JavaScript of course).
+On top of your code being more approachable, I love the sense of accomplishment when
+I find a clean way to solve a problem without immediately jumping to an external
+library or plugin. Thus, when I was faced with the problem of handling touch
+events on handheld and tablet devices for our new site, I started with a
+blank page in my favorite editor.</p>
 
-<pre><code> $ subl ~/.bash_profile
+<p>Touch.coffee is a simple and straightforward CoffeeScript class written
+with pure JavaScript that emits touch events to your application. The only
+dependency this class utilizes is <a href="https://github.com/Wolfy87/EventEmitter">EventEmitter</a>
+to aid in handling the event triggers. The full source for this class is available
+for browsing on <a href="https://gist.github.com/davidstump/5499239">GitHub</a></p>
+
+<p>To get our class started, we will setup a few variables that will help us along the way.</p>
+
+<pre><code>@Touch=
+  horizontalSensitivity: 22
+  verticalSensitivity: 6
+  touchDX: 0
+  touchDY: 0
+  touchStartX: 0
+  touchStartY: 0
 </code></pre>
 
-<p>Step 2. Add an alias to your profile:</p>
+<p>The sensitivity variables allow us to specify how long a touch event should last before
+we go ahead and emit our event to the rest of the application. This helps us differentiate
+between a swipe style gesture versus a simple tap. The next two variables will help us gauge the
+distance travelled during our touch event. Finally, the last two will let us store the
+starting point of our event.</p>
 
-<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
+<pre><code>bind: (elements...) -&gt;
+  for elem in elements
+    elem.addEventListener "touchstart", (event) =&gt;
+     @handleStart(event, elem)
+    elem.addEventListener "touchmove", (event) =&gt;
+     @handleMove(event, elem)
+    elem.addEventListener "touchend", (event) =&gt;
+     @handleEnd(event, elem)
 </code></pre>
 
-<p>Step 3. Save your profile</p>
+<p>First we want to add a bind method to our class to attach the appropriate touch events to
+whichever DOM element (or elements) specified. This method handles one or more elements
+and attaches the touchstart, touchmove and touchend events and delegates the appropriate
+handler methods for each type.</p>
 
-<p>Step 4. Check your daily timesheet:</p>
-
-<pre><code> david:~/Projects/octopress❮source❯$ timesheet
-      2a08dac Adjust navigation mobile styles and hide search field
-      816cfef Apply custom style to site
-      b96240c Add Murky-Mussels Theme
+<pre><code>handleStart: (event, elem) -&gt;
+  if event.touches.length is 1
+    @touchDX = 0
+    @touchDY = 0
+    @touchStartX = event.touches[0].pageX
+    @touchStartY = event.touches[0].pageY
 </code></pre>
 
-<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
+<p>Once we have the events attached to the correct elements, we need to tell our class how to
+handle the various event types along the way. Here we store our initial values once the touch
+event is initially registered.</p>
 
-<p>Cheers!<br/>
-David</p>
+<pre><code>handleMove: (event, elem) -&gt;
+  if event.touches.length &gt; 1
+    @cancelTouch(elem)
+    return false
+
+  @touchDX = event.touches[0].pageX - @touchStartX
+  @touchDY = event.touches[0].pageY - @touchStartY
+</code></pre>
+
+<p>Next we need a method fired during the portion of the touch event where our finger is moving
+across the screen. During this event we want to detect if another touch event is registered
+and reset our listeners to avoid complications. We also want to update our two variables
+tasked with telling us the distance our touch event has travelled.</p>
+
+<pre><code>handleEnd: (event,elem) -&gt;
+  dx = Math.abs(@touchDX)
+  dy = Math.abs(@touchDY)
+
+  if (dx &gt; @horizontalSensitivity) and (dy &lt; (dx * 2 / 3))
+    if @touchDX &gt; 0 then @emitSlideRight() else @emitSlideLeft()
+
+  if (dy &gt; @verticalSensitivity) and (dx &lt; (dy * 2 / 3))
+    if @touchDY &gt; 0 then @emitSlideDown() else @emitSlideUp()
+
+  @cancelTouch(event, elem)
+  false
+</code></pre>
+
+<p>Once a touchend event is triggered and the gesture is complete, we need to gather the total
+distance travelled both horizontally and vertically. Once we have these values, we can use our
+sensitivity variables to determine if the distance of the event is great enough to warrant emitting
+to the rest of our application. We can also use the positive or negative value of
+our difference/distance variable to indicate the specific direction of our event and emit the
+correct notification.</p>
+
+<pre><code>emitSlideLeft: -&gt; @emit 'swipe:left'
+emitSlideRight: -&gt; @emit 'swipe:right'
+emitSlideUp: -&gt; @emit 'swipe:up'
+emitSlideDown: -&gt; @emit 'swipe:down'
+</code></pre>
+
+<p>Finally, once we have successfully registered a touch event and determined that it passes
+our sensitivity threshold set initially, we need to emit the correct event to our application.
+Using <a href="https://github.com/Wolfy87/EventEmitter">EventEmitter</a> we can easily send out the proper
+event notification with very little code.</p>
+
+<p>With our new touch class, we can now bind touch events to any elements in our application.</p>
+
+<pre><code>Touch.bind document.getElementById('menu')
+</code></pre>
+
+<p>Once we have our bindings set, performing actions based our touch events is as easy as calling
+a method when a touch event is detected.</p>
+
+<pre><code>Touch.on 'swipe:left', =&gt; @toggleMenu()
+</code></pre>
+
+<p>While this class certainly doesn&#8217;t handle every possible interaction on a handheld or tablet
+device, it does provide you with a great base for handling basic touch events throughout your
+application with very little code. I welcome and look forward to any and all feedback, suggestions
+and improvements and hope this little class proves helpful!</p>
 </div>
 
 
@@ -160,7 +255,7 @@ David</p>
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2013-05-06T00:01:00Z" pubdate data-updated="true">May 6<span>th</span>, 2013</time>
       
 
 
@@ -168,7 +263,7 @@ David</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2013/05/06/simple-touch-events-in-coffeescript/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2013/05/06/simple-touch-events-in-coffeescript/" >Tweet</a>
   
   
   
@@ -179,10 +274,10 @@ David</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/12/26/initial-commit/" title="Previous Post: Initial Commit.">&laquo; Initial Commit.</a>
+        <a class="basic-alignment left" href="/blog/2013/02/10/use-git-to-manage-your-time/" title="Previous Post: Use Git To Manage Your Time">&laquo; Use Git To Manage Your Time</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" title="Next Post: A Better Fullscreen Experience in Sublime">A Better Fullscreen Experience in Sublime &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/" title="Next Post: How To Use Angular and Keep Loving Rails">How To Use Angular and Keep Loving Rails &raquo;</a>
       
     </p>
   </footer>
@@ -294,8 +389,8 @@ David</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
-        var disqus_url = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_identifier = 'http://davidstump.github.com/blog/2013/05/06/simple-touch-events-in-coffeescript/';
+        var disqus_url = 'http://davidstump.github.com/blog/2013/05/06/simple-touch-events-in-coffeescript/';
         var disqus_script = 'embed.js';
       
     (function () {

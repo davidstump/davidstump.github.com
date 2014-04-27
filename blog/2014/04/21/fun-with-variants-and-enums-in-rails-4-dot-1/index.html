@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Add A Simple Git Timesheet - David Stump</title>
+  <title>Fun with Variants and Enums in Rails 4.1 - David Stump</title>
   <meta name="author" content="David Stump">
 
   
-  <meta name="description" content="At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually &hellip;">
+  <meta name="description" content="This article was originally published at Littlelines. The release of Rails 4.1 this past week included some cool new features two of which are the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/">
+  <link rel="canonical" href="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -89,7 +89,7 @@
   
   <header>
     
-      <h1 class="entry-title">Add a Simple Git Timesheet</h1>
+      <h1 class="entry-title">Fun With Variants and Enums in Rails 4.1</h1>
     
     
       <p class="meta">
@@ -105,39 +105,80 @@
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2014-04-21T09:51:00Z" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>At the end of each day, I find myself crawling through the git logs to record my activities for the day on our timesheet software. It eventually occurred to me that with a few super simple arguments passed to the <code>git log</code> command, I could have a basic output of my timesheet for that day.</p>
+<div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/04/21/fun_with_variants_and_enums_in_rails_4_1/">Littlelines</a>.</em></p>
 
-<p>Step 1. Edit Your bash_profile file:</p>
+<p>The release of Rails 4.1 this past week included some <a href="http://weblog.rubyonrails.org/2014/4/8/Rails-4-1/">cool new features</a> two of which are the introduction of enums and variants. Enums give us some syntatic sugar for handling attributes like status, role, etc. Variants allow us to handle separate types of templates from within a respond_to block on a given action. I setup a <a href="https://github.com/davidstump/enums_and_variants">tiny Rails 4.1 application</a> to demonstrate one possible use for these two new features.</p>
 
-<pre><code> $ subl ~/.bash_profile
+<p><strong>Enum</strong></p>
+
+<p>This application has a basic user model with a name string and an email string. The users controller contains basic index and show actions to show a list to users and their respective details. In the user model, I included an enum attribute <code>role</code> to handle differentiating between users of different types (student, admin or staff). The basic way of defining an enum attribute is as follows:</p>
+
+<pre><code>enum role: [:student, :admin, :staff]
 </code></pre>
 
-<p>Step 2. Add an alias to your profile:</p>
+<p>However, with enums used in this fashion, order must always be maintained or you risk recasting your users with a new role unintentionally. Suppose, months later, a new developer comes along and adjusts the code above like so:</p>
 
-<pre><code> git log --oneline --author="`git config --get user.name`" --since='6am'
+<pre><code>enum role: [:golfer, :student, :admin, :staff]
 </code></pre>
 
-<p>Step 3. Save your profile</p>
+<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops.</p>
 
-<p>Step 4. Check your daily timesheet:</p>
+<p>For this reason I would most likely use explicitly defined enums to avoid any potential future mishaps:</p>
 
-<pre><code> david:~/Projects/octopress❮source❯$ timesheet
-      2a08dac Adjust navigation mobile styles and hide search field
-      816cfef Apply custom style to site
-      b96240c Add Murky-Mussels Theme
+<pre><code>enum role: {student: 0, admin: 1, staff: 2}
 </code></pre>
 
-<p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
+<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm.</p>
 
-<p>Cheers!<br/>
-David</p>
+<p>Once I have my enum defined, I now have access to all kinds of goodies to use throughout my application. I can now easily determine a given users role:</p>
+
+<pre><code>user.role # =&gt; "student"
+</code></pre>
+
+<p>I can easily determine if a user is a member of a particular role:</p>
+
+<pre><code>user.student? # =&gt; true
+</code></pre>
+
+<p>I can quickly assign/update a user&#8217;s role:</p>
+
+<pre><code>user.staff! # =&gt; [sql] true
+</code></pre>
+
+<p>Or see all of the users scoped to a particular role:</p>
+
+<pre><code>User.staff # =&gt; #&lt;ActiveRecord::Relation []&gt;
+</code></pre>
+
+<p><strong>Variants</strong></p>
+
+<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user&#8217;s role.</p>
+
+<pre><code>def show
+  @user = User.find(params[:id])
+  request.variant = @user.role.to_sym
+  respond_to do |format|
+    format.html do |html|
+      html.student
+      html.staff
+      html.admin
+    end
+  end
+end
+</code></pre>
+
+<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc.</p>
+
+<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user&#8217;s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
+
+<p>Cheers!</p>
 </div>
 
 
@@ -160,7 +201,7 @@ David</p>
   
 
 
-<time datetime="2012-12-31T15:06:00-05:00" pubdate data-updated="true">Dec 31<span>st</span>, 2012</time>
+<time datetime="2014-04-21T09:51:00Z" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
       
 
 
@@ -168,7 +209,7 @@ David</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/" >Tweet</a>
   
   
   
@@ -179,10 +220,8 @@ David</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/12/26/initial-commit/" title="Previous Post: Initial Commit.">&laquo; Initial Commit.</a>
+        <a class="basic-alignment left" href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/" title="Previous Post: How To Use Angular and Keep Loving Rails">&laquo; How To Use Angular and Keep Loving Rails</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/" title="Next Post: A Better Fullscreen Experience in Sublime">A Better Fullscreen Experience in Sublime &raquo;</a>
       
     </p>
   </footer>
@@ -294,8 +333,8 @@ David</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
-        var disqus_url = 'http://davidstump.github.com/blog/2012/12/31/add-a-simple-git-timesheet/';
+        var disqus_identifier = 'http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/';
+        var disqus_url = 'http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/';
         var disqus_script = 'embed.js';
       
     (function () {
