@@ -136,14 +136,21 @@ for browsing on <a href="https://gist.github.com/davidstump/5499239">GitHub</a><
 
 <p>To get our class started, we will setup a few variables that will help us along the way.</p>
 
-<pre><code>@Touch=
-  horizontalSensitivity: 22
-  verticalSensitivity: 6
-  touchDX: 0
-  touchDY: 0
-  touchStartX: 0
-  touchStartY: 0
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="vi">@Touch=</span>
+</span><span class="line">  <span class="nv">horizontalSensitivity: </span><span class="mi">22</span>
+</span><span class="line">  <span class="nv">verticalSensitivity: </span><span class="mi">6</span>
+</span><span class="line">  <span class="nv">touchDX: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchDY: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchStartX: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchStartY: </span><span class="mi">0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>The sensitivity variables allow us to specify how long a touch event should last before
 we go ahead and emit our event to the rest of the application. This helps us differentiate
@@ -151,60 +158,93 @@ between a swipe style gesture versus a simple tap. The next two variables will h
 distance travelled during our touch event. Finally, the last two will let us store the
 starting point of our event.</p>
 
-<pre><code>bind: (elements...) -&gt;
-  for elem in elements
-    elem.addEventListener "touchstart", (event) =&gt;
-     @handleStart(event, elem)
-    elem.addEventListener "touchmove", (event) =&gt;
-     @handleMove(event, elem)
-    elem.addEventListener "touchend", (event) =&gt;
-     @handleEnd(event, elem)
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">bind: </span><span class="nf">(elements...) -&gt;</span>
+</span><span class="line">  <span class="k">for</span> <span class="nx">elem</span> <span class="k">in</span> <span class="nx">elements</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchstart&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleStart</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchmove&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleMove</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchend&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleEnd</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>First we want to add a bind method to our class to attach the appropriate touch events to
 whichever DOM element (or elements) specified. This method handles one or more elements
 and attaches the touchstart, touchmove and touchend events and delegates the appropriate
 handler methods for each type.</p>
 
-<pre><code>handleStart: (event, elem) -&gt;
-  if event.touches.length is 1
-    @touchDX = 0
-    @touchDY = 0
-    @touchStartX = event.touches[0].pageX
-    @touchStartY = event.touches[0].pageY
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleStart: </span><span class="nf">(event, elem) -&gt;</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">1</span>
+</span><span class="line">    <span class="vi">@touchDX = </span><span class="mi">0</span>
+</span><span class="line">    <span class="vi">@touchDY = </span><span class="mi">0</span>
+</span><span class="line">    <span class="vi">@touchStartX = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageX</span>
+</span><span class="line">    <span class="vi">@touchStartY = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageY</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once we have the events attached to the correct elements, we need to tell our class how to
 handle the various event types along the way. Here we store our initial values once the touch
 event is initially registered.</p>
 
-<pre><code>handleMove: (event, elem) -&gt;
-  if event.touches.length &gt; 1
-    @cancelTouch(elem)
-    return false
-
-  @touchDX = event.touches[0].pageX - @touchStartX
-  @touchDY = event.touches[0].pageY - @touchStartY
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleMove: </span><span class="nf">(event, elem) -&gt;</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span><span class="line">    <span class="nx">@cancelTouch</span><span class="p">(</span><span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">false</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@touchDX = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">@touchStartX</span>
+</span><span class="line">  <span class="vi">@touchDY = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">@touchStartY</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Next we need a method fired during the portion of the touch event where our finger is moving
 across the screen. During this event we want to detect if another touch event is registered
 and reset our listeners to avoid complications. We also want to update our two variables
 tasked with telling us the distance our touch event has travelled.</p>
 
-<pre><code>handleEnd: (event,elem) -&gt;
-  dx = Math.abs(@touchDX)
-  dy = Math.abs(@touchDY)
-
-  if (dx &gt; @horizontalSensitivity) and (dy &lt; (dx * 2 / 3))
-    if @touchDX &gt; 0 then @emitSlideRight() else @emitSlideLeft()
-
-  if (dy &gt; @verticalSensitivity) and (dx &lt; (dy * 2 / 3))
-    if @touchDY &gt; 0 then @emitSlideDown() else @emitSlideUp()
-
-  @cancelTouch(event, elem)
-  false
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleEnd: </span><span class="nf">(event,elem) -&gt;</span>
+</span><span class="line">  <span class="nv">dx = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">@touchDX</span><span class="p">)</span>
+</span><span class="line">  <span class="nv">dy = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">@touchDY</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">if</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">&gt;</span> <span class="nx">@horizontalSensitivity</span><span class="p">)</span> <span class="o">and</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">@touchDX</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="nx">@emitSlideRight</span><span class="p">()</span> <span class="k">else</span> <span class="nx">@emitSlideLeft</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">if</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&gt;</span> <span class="nx">@verticalSensitivity</span><span class="p">)</span> <span class="o">and</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">@touchDY</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="nx">@emitSlideDown</span><span class="p">()</span> <span class="k">else</span> <span class="nx">@emitSlideUp</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">@cancelTouch</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">  <span class="kc">false</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once a touchend event is triggered and the gesture is complete, we need to gather the total
 distance travelled both horizontally and vertically. Once we have these values, we can use our
@@ -213,11 +253,15 @@ to the rest of our application. We can also use the positive or negative value o
 our difference/distance variable to indicate the specific direction of our event and emit the
 correct notification.</p>
 
-<pre><code>emitSlideLeft: -&gt; @emit 'swipe:left'
-emitSlideRight: -&gt; @emit 'swipe:right'
-emitSlideUp: -&gt; @emit 'swipe:up'
-emitSlideDown: -&gt; @emit 'swipe:down'
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">emitSlideLeft: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:left&#39;</span>
+</span><span class="line"><span class="nv">emitSlideRight: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:right&#39;</span>
+</span><span class="line"><span class="nv">emitSlideUp: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:up&#39;</span>
+</span><span class="line"><span class="nv">emitSlideDown: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:down&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Finally, once we have successfully registered a touch event and determined that it passes
 our sensitivity threshold set initially, we need to emit the correct event to our application.
@@ -226,19 +270,22 @@ event notification with very little code.</p>
 
 <p>With our new touch class, we can now bind touch events to any elements in our application.</p>
 
-<pre><code>Touch.bind document.getElementById('menu')
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">Touch</span><span class="p">.</span><span class="nx">bind</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s">&#39;menu&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once we have our bindings set, performing actions based our touch events is as easy as calling
 a method when a touch event is detected.</p>
 
-<pre><code>Touch.on 'swipe:left', =&gt; @toggleMenu()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">Touch</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;swipe:left&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@toggleMenu</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>While this class certainly doesn&#8217;t handle every possible interaction on a handheld or tablet
+<p>While this class certainly doesn’t handle every possible interaction on a handheld or tablet
 device, it does provide you with a great base for handling basic touch events throughout your
 application with very little code. I welcome and look forward to any and all feedback, suggestions
 and improvements and hope this little class proves helpful!</p>
+
 </div>
 
 </article>

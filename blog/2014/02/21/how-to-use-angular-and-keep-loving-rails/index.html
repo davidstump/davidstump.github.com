@@ -121,30 +121,30 @@ $(function(){
   <div class="post-date"><time datetime="2014-02-21T20:37:00Z" data-updated="true" itemprop="datePublished">Feb 21<span>st</span>, 2014</time></div>
 	<div class="entry-content" itemprop="articleBody"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/02/21/how_to_use_angularjs_and_keep_loving_rails/">Littlelines</a>.</em></p>
 
-<h2>My Approach</h2>
+<h2 id="my-approach">My Approach</h2>
 
-<p>  I love writing Ruby and I love using Rails. So when I started looking for a
+<p>I love writing Ruby and I love using Rails. So when I started looking for a
   client-side framework to help organize my front-end process and code, I was
-  cautious of frameworks that demanded I abandon my &#8220;Rails Way&#8221; and adopt their
+  cautious of frameworks that demanded I abandon my “Rails Way” and adopt their
   process, style, and approach. I was looking for a framework that added value to
-  my &#8220;Rails App&#8221;, not a solution that wanted Rails to instead act as a
+  my “Rails App”, not a solution that wanted Rails to instead act as a
   compliment to my client-side app.</p>
 
-<p>  Enter Angular stage left.</p>
+<p>Enter Angular stage left.</p>
 
-<p>  But wait, you say, tons of Angular apps use Rails (or any other framework) as
+<p>But wait, you say, tons of Angular apps use Rails (or any other framework) as
   a backend api for their purely client-side application. Yes, you would be very
   correct, however, unlike numerous other client-side frameworks, Angular allows
   me to easily and quickly sprinkle it on top of my traditional Rails app if
-  that&#8217;s my preference.</p>
+  that’s my preference.</p>
 
-<p>  <strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
+<p><strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
   Rails developer while still enjoying all the advantages Angular provides.
   If, in your heart, you want nothing more than to make purely client-side apps
   every day, then more power to you for being focused. Thanks for reading this
   far - and please accept my <strong><a href="http://f.cl.ly/items/3c340s340q3d3q3X0I0h/corgis.gif">token of thanks</a></strong>.</p>
 
-<p>  My happy-place with Angular and Rails is to let each framework do what it&#8217;s
+<p>My happy-place with Angular and Rails is to let each framework do what it’s
   good at and then move aside. For Rails, it is well suited to handle routing,
   helpers and primary application logic. For Angular, it is best suited to
   handle client-side interactions, dynamic bindings, ajax requests and
@@ -152,17 +152,17 @@ $(function(){
   caused by Angular routing, Rails remote linking and endless arbitrary jQuery
   listeners.</p>
 
-<p>  Once I had settled on an approach to co-existence of Angular and Rails, my next
+<p>Once I had settled on an approach to co-existence of Angular and Rails, my next
   obstacle was the somewhat verbose and obscure Angular syntax.</p>
 
-<h2>CoffeeScript Sanity</h2>
+<h2 id="coffeescript-sanity">CoffeeScript Sanity</h2>
 
-<p>  Personally, I love using CoffeeScript (through that is in no way required to
+<p>Personally, I love using CoffeeScript (through that is in no way required to
   enjoy Angular on Rails) and my first step in incorporating Angular into my
   daily Rails flow was to get a handle on some of the more obtuse Angular syntax
   in favor of the CoffeeScript class approach.</p>
 
-<p>  The first step was to create a base class (NGObject) to handle basic
+<p>The first step was to create a base class (NGObject) to handle basic
   dependency injection. This class iterates through the array of dependencies
   passed via the class @$inject variable and creates an instance variable with
   the same name. This gives us the ability to easily reference scope, services,
@@ -170,14 +170,19 @@ $(function(){
   @ThingSvc, etc). Once the dependencies are handled, the NGObject class will
   check for an init() function and call it if one exists.</p>
 
-<pre><code>class @NGObject
-  constructor: (dependencies...) -&gt;
-    for dependency, index in @constructor.$inject
-      @[dependency.replace('$', '')] = dependencies[index]
-    @init?()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="nv">constructor: </span><span class="nf">(dependencies...) -&gt;</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">dependency</span><span class="p">,</span> <span class="nx">index</span> <span class="k">in</span> <span class="nx">@constructor</span><span class="p">.</span><span class="nx">$inject</span>
+</span><span class="line">      <span class="nx">@</span><span class="p">[</span><span class="nx">dependency</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">dependencies</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span>
+</span><span class="line">    <span class="nx">@init</span><span class="o">?</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  Next, I use that NGObject base class to build a variety of other classes to
+<p>Next, I use that NGObject base class to build a variety of other classes to
   handle specific angular object types such as NGController, NGService, etc.
   Each of these classes exposes a register function that wires up our object to
   the correct angular application. During object construction, we take the
@@ -185,104 +190,146 @@ $(function(){
   proper scope. This allows us access to the attributes and functions of any
   object in the view layer.</p>
 
-<pre><code>class @NGController extends @NGObject
-  @register: (app) -&gt;
-    app.controller "#{@name}", this
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGController</span> <span class="k">extends</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="vi">@register: </span><span class="nf">(app) -&gt;</span>
+</span><span class="line">    <span class="nx">app</span><span class="p">.</span><span class="nx">controller</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="k">this</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">constructor: </span><span class="nf">(@scope) -&gt;</span>
+</span><span class="line">    <span class="nx">@scope</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="k">this</span> <span class="k">when</span> <span class="o">!</span><span class="nx">@scope</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span><span class="o">?</span>
+</span><span class="line">    <span class="k">super</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  constructor: (@scope) -&gt;
-    @scope[key] = value for key, value of this when !@scope[key]?
-    super
-</code></pre>
-
-<p>  Specifically for service objects, we setup an NGService object that implements
+<p>Specifically for service objects, we setup an NGService object that implements
   event notifications allowing controllers, directives, etc to register callbacks
   for specific service events. In the service, whenever desired, you can call the
   <code>notify</code> function and inform all registered observers that the specific event
   occurred.</p>
 
-<pre><code>class @NGService extends @NGObject
-  @register: (app) -&gt; app.service "#{@name}", this
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGService</span> <span class="k">extends</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="vi">@register: </span><span class="nf">(app) -&gt;</span> <span class="nx">app</span><span class="p">.</span><span class="nx">service</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="k">this</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">observableCallbacks: </span><span class="p">{}</span>
+</span><span class="line">
+</span><span class="line">  <span class="kc">on</span><span class="o">:</span> <span class="nf">(event_name, callback) -&gt;</span>
+</span><span class="line">    <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">]</span> <span class="o">?=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">].</span><span class="nx">push</span> <span class="nx">callback</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">notify: </span><span class="nf">(event_name, data = {}) -&gt;</span>
+</span><span class="line">    <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span> <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">],</span> <span class="nf">(callback) -&gt;</span>
+</span><span class="line">      <span class="nx">callback</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  observableCallbacks: {}
-
-  on: (event_name, callback) -&gt;
-    @observableCallbacks[event_name] ?= []
-    @observableCallbacks[event_name].push callback
-
-  notify: (event_name, data = {}) -&gt;
-    angular.forEach @observableCallbacks[event_name], (callback) -&gt;
-      callback(data)
-</code></pre>
-
-<p>  We use an event_name for each event type which adds the ability to sanely
+<p>We use an event_name for each event type which adds the ability to sanely
   register and call multiple events explicitly as so:</p>
 
-<pre><code>handleEvent: -&gt; notify 'my:event'
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleEvent: </span><span class="o">-&gt;</span> <span class="nx">notify</span> <span class="s">&#39;my:event&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-MyService.on 'my:event', -&gt; doStuff()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">MyService</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;my:event&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">doStuff</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  Included in my Rails projects, this helper allow me to write concise and
+<p>Included in my Rails projects, this helper allow me to write concise and
   legible angular code in my preferred CoffeeScript class syntax. Here is a short
   example of a rewritten Angular controller with the new syntax and format:</p>
 
-<pre><code>class CalendarCtrl extends @NGController
-  @register window.App
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">CalendarCtrl</span> <span class="k">extends</span> <span class="nx">@NGController</span>
+</span><span class="line">  <span class="nx">@register</span> <span class="nb">window</span><span class="p">.</span><span class="nx">App</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@$inject: </span><span class="p">[</span>
+</span><span class="line">    <span class="s">&#39;$scope&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Calendar&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Panel&#39;</span><span class="p">,</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">init: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="vi">@config = </span><span class="nx">@Calendar</span><span class="p">.</span><span class="nx">config</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  @$inject: [
-    '$scope',
-    'Calendar',
-    'Panel',
-  ]
-
-  init: -&gt;
-    @config = @Calendar.config()
-</code></pre>
-
-<p>  Is there anything explicitly problematic or wrong about the verbose
+<p>Is there anything explicitly problematic or wrong about the verbose
   traditional Angular syntax? Absolutely not! Does this syntax make me a happier
   developer and allow me to get my code out the door quicker? Without a doubt.
   Setting up this syntax was a fun endeavor and my hope is it makes at least one
-  other developer&#8217;s life happier!</p>
+  other developer’s life happier!</p>
 
-<h2>Rails Resource To The Rescue</h2>
+<h2 id="rails-resource-to-the-rescue">Rails Resource To The Rescue</h2>
 
-<p>  One of the last remaining hurdles to quick and easy angular development with
+<p>One of the last remaining hurdles to quick and easy angular development with
   rails is wiring up Rails resources with Angular. One source of frustration is
-  Angular&#8217;s handling (or lack thereof) of nested resource parameters. Here are a few
+  Angular’s handling (or lack thereof) of nested resource parameters. Here are a few
   recent GitHub issues as examples of that frustration <strong><a href="https://github.com/angular/angular.js/pull/1640">fix(ngResource): Add support for nested params</a></strong>
   and <strong><a href="https://github.com/angular/angular.js/issues/3740">Query params not serializes as expected</a></strong>.
   Thankfully, Angular uses a modular approach to resource handling, so swapping
   ngResource with a different library is a breeze.</p>
 
-<p>  After months of massaging the flat params from Angular in my Rails controllers, I
+<p>After months of massaging the flat params from Angular in my Rails controllers, I
   stumbled across <strong><a href="https://github.com/FineLinePrototyping/angularjs-rails-resource">Rails Resource</a></strong>.
   Rails Resource is a promise based resource module that handles Angular resources
   exactly as a default Rails application would expect. With very little code, we
   can wire up Angular with our Rails resource and be on our way.</p>
 
-<p>  As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
+<p>As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
   Brewery. To wire up Angular with these resources using Rails Resource I could
   write an Angular factory such as:</p>
 
-<pre><code>App.factory "Beer", ['railsResourceFactory', 'railsSerializer', (railsResourceFactory, railsSerializer) -&gt;
-  resource = railsResourceFactory
-    url: "/beers"
-    name: "beer"
-    serializer: railsSerializer -&gt;
-      @nestedAttribute 'brewery'
-]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">App</span><span class="p">.</span><span class="nx">factory</span> <span class="s">&quot;Beer&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;railsResourceFactory&#39;</span><span class="p">,</span> <span class="s">&#39;railsSerializer&#39;</span><span class="p">,</span> <span class="nf">(railsResourceFactory, railsSerializer) -&gt;</span>
+</span><span class="line">  <span class="nv">resource = </span><span class="nx">railsResourceFactory</span>
+</span><span class="line">    <span class="nv">url: </span><span class="s">&quot;/beers&quot;</span>
+</span><span class="line">    <span class="nv">name: </span><span class="s">&quot;beer&quot;</span>
+</span><span class="line">    <span class="nv">serializer: </span><span class="nx">railsSerializer</span> <span class="o">-&gt;</span>
+</span><span class="line">      <span class="nx">@nestedAttribute</span> <span class="s">&#39;brewery&#39;</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  This code creates an Angular resource &#8216;Beer&#8217; and maps it to the appropriate
+<p>This code creates an Angular resource ‘Beer’ and maps it to the appropriate
   endpoints in our Rails application. Our next step is to setup the association
   with the Brewery model. You can see this done above with the following lines:</p>
 
-<pre><code>  serializer: railsSerializer -&gt;
-    @nestedAttribute 'brewery'
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line">  <span class="nv">serializer: </span><span class="nx">railsSerializer</span> <span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@nestedAttribute</span> <span class="s">&#39;brewery&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  The serializer in Rails Resource looks to be quite powerful in allowing you to
+<p>The serializer in Rails Resource looks to be quite powerful in allowing you to
   both specify relationships and alter the json coming and going to resource
   endpoints. The factory we have created above sets up a Beer resource in Angular
   that <code>accepts_nested_attributes_for</code> a Brewery resource. With only the code
@@ -290,60 +337,86 @@ MyService.on 'my:event', -&gt; doStuff()
   are just what Rails expects and is handled easily by a traditional Rails
   create action.</p>
 
-<pre><code>Started POST "/beers" for 127.0.0.1
-Processing by BeersController#create as JSON
-Parameters: {"beer"=&gt;{"name"=&gt;"Goose Island IPA", "description"=&gt;"Hoppy Goodness",
-             "brewery_attributes"=&gt;{"name"=&gt;"Goose Island"}}}
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="no">Started</span> <span class="no">POST</span> <span class="s2">&quot;/beers&quot;</span> <span class="k">for</span> <span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+</span><span class="line"><span class="no">Processing</span> <span class="n">by</span> <span class="no">BeersController</span><span class="c1">#create as JSON</span>
+</span><span class="line"><span class="no">Parameters</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;beer&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Goose Island IPA&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Hoppy Goodness&quot;</span><span class="p">,</span>
+</span><span class="line">             <span class="s2">&quot;brewery_attributes&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Goose Island&quot;</span><span class="p">}}}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h2>The Result</h2>
+<h2 id="the-result">The Result</h2>
 
-<p>  During this article I have described three tools I use to make me a happier Rails
+<p>During this article I have described three tools I use to make me a happier Rails
   developer leveraging the power of AngularJS in my applications:</p>
 
 <ol>
-<li>Letting each framework handle what it&#8217;s good at</li>
-<li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
-<li>A resource module that wires up Rails resources with ease</li>
+  <li>Letting each framework handle what it’s good at</li>
+  <li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
+  <li>A resource module that wires up Rails resources with ease</li>
 </ol>
 
-
-<p>  Using these methods I setup a very basic CRUD Rails application on Github
+<p>Using these methods I setup a very basic CRUD Rails application on Github
   <strong><a href="http://github.com/davidstump/beers">davidstump/beers</a></strong>. With the exception
   of the factory shown above, the only Javascript required was a short and sweet
   Angular controller:</p>
 
-<pre><code>class BeersCtrl extends @NGController
-  @register window.App
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">BeersCtrl</span> <span class="k">extends</span> <span class="nx">@NGController</span>
+</span><span class="line">  <span class="nx">@register</span> <span class="nb">window</span><span class="p">.</span><span class="nx">App</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@$inject: </span><span class="p">[</span>
+</span><span class="line">    <span class="s">&#39;$scope&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Beer&#39;</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">init: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@loadBeers</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">loadBeers: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@Beer</span><span class="p">.</span><span class="nx">query</span><span class="p">().</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="vi">@all = </span><span class="nx">results</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">create: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="k">new</span> <span class="nx">@Beer</span><span class="p">(</span><span class="nx">@newBeer</span><span class="p">).</span><span class="nx">create</span><span class="p">().</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="nx">@loadBeers</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">destroy: </span><span class="nf">(beer_id) -&gt;</span>
+</span><span class="line">    <span class="nx">@Beer</span><span class="p">.</span><span class="nx">$delete</span><span class="p">(</span><span class="nx">@Beer</span><span class="p">.</span><span class="nx">resourceUrl</span><span class="p">(</span><span class="nx">beer_id</span><span class="p">)).</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="nx">@loadBeers</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  @$inject: [
-    '$scope',
-    'Beer'
-  ]
-
-  init: -&gt;
-    @loadBeers()
-
-  loadBeers: -&gt;
-    @Beer.query().then (results) =&gt;
-      @all = results
-
-  create: -&gt;
-    new @Beer(@newBeer).create().then (results) =&gt;
-      @loadBeers()
-
-  destroy: (beer_id) -&gt;
-    @Beer.$delete(@Beer.resourceUrl(beer_id)).then (results) =&gt;
-      @loadBeers()
-</code></pre>
-
-<p>  This style of Angular fits seamlessly into my familiar mental
+<p>This style of Angular fits seamlessly into my familiar mental
   model formed from my time developing Rails applications and ultimately makes
   me a quicker, happier and healthier developer.</p>
 
-<p>  I would love any and all feedback (and Pull Requests) on both these approaches
+<p>I would love any and all feedback (and Pull Requests) on both these approaches
   as well as the NGHelper library itself. Thank you for taking the time to read
   through my thoughts and happy coding!</p>
+
 </div>
 
 </article>

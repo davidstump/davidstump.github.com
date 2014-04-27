@@ -4,7 +4,7 @@
   <title><![CDATA[David Stump]]></title>
   <link href="http://davidstump.github.com/atom.xml" rel="self"/>
   <link href="http://davidstump.github.com/"/>
-  <updated>2014-04-27T12:19:00-04:00</updated>
+  <updated>2014-04-27T12:40:28-04:00</updated>
   <id>http://davidstump.github.com/</id>
   <author>
     <name><![CDATA[David Stump]]></name>
@@ -22,69 +22,88 @@
 
 <p>The release of Rails 4.1 this past week included some <a href="http://weblog.rubyonrails.org/2014/4/8/Rails-4-1/">cool new features</a> two of which are the introduction of enums and variants. Enums give us some syntatic sugar for handling attributes like status, role, etc. Variants allow us to handle separate types of templates from within a respond_to block on a given action. I setup a <a href="https://github.com/davidstump/enums_and_variants">tiny Rails 4.1 application</a> to demonstrate one possible use for these two new features.</p>
 
-<p><strong>Enum</strong></p>
+<p><strong>Enum</strong> </p>
 
 <p>This application has a basic user model with a name string and an email string. The users controller contains basic index and show actions to show a list to users and their respective details. In the user model, I included an enum attribute <code>role</code> to handle differentiating between users of different types (student, admin or staff). The basic way of defining an enum attribute is as follows:</p>
 
-<pre><code>enum role: [:student, :admin, :staff]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="o">[</span><span class="ss">:student</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:staff</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>However, with enums used in this fashion, order must always be maintained or you risk recasting your users with a new role unintentionally. Suppose, months later, a new developer comes along and adjusts the code above like so:</p>
 
-<pre><code>enum role: [:golfer, :student, :admin, :staff]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="o">[</span><span class="ss">:golfer</span><span class="p">,</span> <span class="ss">:student</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:staff</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops.</p>
+<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops. </p>
 
 <p>For this reason I would most likely use explicitly defined enums to avoid any potential future mishaps:</p>
 
-<pre><code>enum role: {student: 0, admin: 1, staff: 2}
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="p">{</span><span class="n">student</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">admin</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">staff</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm.</p>
+<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm. </p>
 
 <p>Once I have my enum defined, I now have access to all kinds of goodies to use throughout my application. I can now easily determine a given users role:</p>
 
-<pre><code>user.role # =&gt; "student"
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">role</span> <span class="c1"># =&gt; &quot;student&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>I can easily determine if a user is a member of a particular role:</p>
 
-<pre><code>user.student? # =&gt; true
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">student?</span> <span class="c1"># =&gt; true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>I can quickly assign/update a user&#8217;s role:</p>
+<p>I can quickly assign/update a user’s role:</p>
 
-<pre><code>user.staff! # =&gt; [sql] true
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">staff!</span> <span class="c1"># =&gt; [sql] true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Or see all of the users scoped to a particular role:</p>
 
-<pre><code>User.staff # =&gt; #&lt;ActiveRecord::Relation []&gt;
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="no">User</span><span class="o">.</span><span class="n">staff</span> <span class="c1"># =&gt; #&lt;ActiveRecord::Relation []&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><strong>Variants</strong></p>
 
-<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user&#8217;s role.</p>
+<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user’s role.</p>
 
-<pre><code>def show
-  @user = User.find(params[:id])
-  request.variant = @user.role.to_sym
-  respond_to do |format|
-    format.html do |html|
-      html.student
-      html.staff
-      html.admin
-    end
-  end
-end
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">def</span> <span class="nf">show</span>
+</span><span class="line">  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">request</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">to_sym</span>
+</span><span class="line">  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class="line">    <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="k">do</span> <span class="o">|</span><span class="n">html</span><span class="o">|</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">student</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">staff</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">admin</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc.</p>
+<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc. </p>
 
-<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user&#8217;s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
+<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user’s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
 
 <p>Cheers!</p>
+
 ]]></content>
   </entry>
   
@@ -95,30 +114,30 @@ end
     <id>http://davidstump.github.com/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails</id>
     <content type="html"><![CDATA[<p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/02/21/how_to_use_angularjs_and_keep_loving_rails/">Littlelines</a>.</em></p>
 
-<h2>My Approach</h2>
+<h2 id="my-approach">My Approach</h2>
 
-<p>  I love writing Ruby and I love using Rails. So when I started looking for a
+<p>I love writing Ruby and I love using Rails. So when I started looking for a
   client-side framework to help organize my front-end process and code, I was
-  cautious of frameworks that demanded I abandon my &#8220;Rails Way&#8221; and adopt their
+  cautious of frameworks that demanded I abandon my “Rails Way” and adopt their
   process, style, and approach. I was looking for a framework that added value to
-  my &#8220;Rails App&#8221;, not a solution that wanted Rails to instead act as a
+  my “Rails App”, not a solution that wanted Rails to instead act as a
   compliment to my client-side app.</p>
 
-<p>  Enter Angular stage left.</p>
+<p>Enter Angular stage left.</p>
 
-<p>  But wait, you say, tons of Angular apps use Rails (or any other framework) as
+<p>But wait, you say, tons of Angular apps use Rails (or any other framework) as
   a backend api for their purely client-side application. Yes, you would be very
   correct, however, unlike numerous other client-side frameworks, Angular allows
   me to easily and quickly sprinkle it on top of my traditional Rails app if
-  that&#8217;s my preference.</p>
+  that’s my preference.</p>
 
-<p>  <strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
+<p><strong>CAVEAT</strong> - This article is only meant to demonstrate how I stayed a happy, healthy
   Rails developer while still enjoying all the advantages Angular provides.
   If, in your heart, you want nothing more than to make purely client-side apps
   every day, then more power to you for being focused. Thanks for reading this
   far - and please accept my <strong><a href="http://f.cl.ly/items/3c340s340q3d3q3X0I0h/corgis.gif">token of thanks</a></strong>.</p>
 
-<p>  My happy-place with Angular and Rails is to let each framework do what it&#8217;s
+<p>My happy-place with Angular and Rails is to let each framework do what it’s
   good at and then move aside. For Rails, it is well suited to handle routing,
   helpers and primary application logic. For Angular, it is best suited to
   handle client-side interactions, dynamic bindings, ajax requests and
@@ -126,17 +145,17 @@ end
   caused by Angular routing, Rails remote linking and endless arbitrary jQuery
   listeners.</p>
 
-<p>  Once I had settled on an approach to co-existence of Angular and Rails, my next
+<p>Once I had settled on an approach to co-existence of Angular and Rails, my next
   obstacle was the somewhat verbose and obscure Angular syntax.</p>
 
-<h2>CoffeeScript Sanity</h2>
+<h2 id="coffeescript-sanity">CoffeeScript Sanity</h2>
 
-<p>  Personally, I love using CoffeeScript (through that is in no way required to
+<p>Personally, I love using CoffeeScript (through that is in no way required to
   enjoy Angular on Rails) and my first step in incorporating Angular into my
   daily Rails flow was to get a handle on some of the more obtuse Angular syntax
   in favor of the CoffeeScript class approach.</p>
 
-<p>  The first step was to create a base class (NGObject) to handle basic
+<p>The first step was to create a base class (NGObject) to handle basic
   dependency injection. This class iterates through the array of dependencies
   passed via the class @$inject variable and creates an instance variable with
   the same name. This gives us the ability to easily reference scope, services,
@@ -144,14 +163,19 @@ end
   @ThingSvc, etc). Once the dependencies are handled, the NGObject class will
   check for an init() function and call it if one exists.</p>
 
-<pre><code>class @NGObject
-  constructor: (dependencies...) -&gt;
-    for dependency, index in @constructor.$inject
-      @[dependency.replace('$', '')] = dependencies[index]
-    @init?()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="nv">constructor: </span><span class="nf">(dependencies...) -&gt;</span>
+</span><span class="line">    <span class="k">for</span> <span class="nx">dependency</span><span class="p">,</span> <span class="nx">index</span> <span class="k">in</span> <span class="nx">@constructor</span><span class="p">.</span><span class="nx">$inject</span>
+</span><span class="line">      <span class="nx">@</span><span class="p">[</span><span class="nx">dependency</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s">&#39;$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">dependencies</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span>
+</span><span class="line">    <span class="nx">@init</span><span class="o">?</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  Next, I use that NGObject base class to build a variety of other classes to
+<p>Next, I use that NGObject base class to build a variety of other classes to
   handle specific angular object types such as NGController, NGService, etc.
   Each of these classes exposes a register function that wires up our object to
   the correct angular application. During object construction, we take the
@@ -159,104 +183,146 @@ end
   proper scope. This allows us access to the attributes and functions of any
   object in the view layer.</p>
 
-<pre><code>class @NGController extends @NGObject
-  @register: (app) -&gt;
-    app.controller "#{@name}", this
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGController</span> <span class="k">extends</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="vi">@register: </span><span class="nf">(app) -&gt;</span>
+</span><span class="line">    <span class="nx">app</span><span class="p">.</span><span class="nx">controller</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="k">this</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">constructor: </span><span class="nf">(@scope) -&gt;</span>
+</span><span class="line">    <span class="nx">@scope</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="k">this</span> <span class="k">when</span> <span class="o">!</span><span class="nx">@scope</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span><span class="o">?</span>
+</span><span class="line">    <span class="k">super</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  constructor: (@scope) -&gt;
-    @scope[key] = value for key, value of this when !@scope[key]?
-    super
-</code></pre>
-
-<p>  Specifically for service objects, we setup an NGService object that implements
+<p>Specifically for service objects, we setup an NGService object that implements
   event notifications allowing controllers, directives, etc to register callbacks
   for specific service events. In the service, whenever desired, you can call the
   <code>notify</code> function and inform all registered observers that the specific event
   occurred.</p>
 
-<pre><code>class @NGService extends @NGObject
-  @register: (app) -&gt; app.service "#{@name}", this
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">@NGService</span> <span class="k">extends</span> <span class="nx">@NGObject</span>
+</span><span class="line">  <span class="vi">@register: </span><span class="nf">(app) -&gt;</span> <span class="nx">app</span><span class="p">.</span><span class="nx">service</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="k">this</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">observableCallbacks: </span><span class="p">{}</span>
+</span><span class="line">
+</span><span class="line">  <span class="kc">on</span><span class="o">:</span> <span class="nf">(event_name, callback) -&gt;</span>
+</span><span class="line">    <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">]</span> <span class="o">?=</span> <span class="p">[]</span>
+</span><span class="line">    <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">].</span><span class="nx">push</span> <span class="nx">callback</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">notify: </span><span class="nf">(event_name, data = {}) -&gt;</span>
+</span><span class="line">    <span class="nx">angular</span><span class="p">.</span><span class="nx">forEach</span> <span class="nx">@observableCallbacks</span><span class="p">[</span><span class="nx">event_name</span><span class="p">],</span> <span class="nf">(callback) -&gt;</span>
+</span><span class="line">      <span class="nx">callback</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  observableCallbacks: {}
-
-  on: (event_name, callback) -&gt;
-    @observableCallbacks[event_name] ?= []
-    @observableCallbacks[event_name].push callback
-
-  notify: (event_name, data = {}) -&gt;
-    angular.forEach @observableCallbacks[event_name], (callback) -&gt;
-      callback(data)
-</code></pre>
-
-<p>  We use an event_name for each event type which adds the ability to sanely
+<p>We use an event_name for each event type which adds the ability to sanely
   register and call multiple events explicitly as so:</p>
 
-<pre><code>handleEvent: -&gt; notify 'my:event'
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleEvent: </span><span class="o">-&gt;</span> <span class="nx">notify</span> <span class="s">&#39;my:event&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-MyService.on 'my:event', -&gt; doStuff()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">MyService</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;my:event&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">doStuff</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  Included in my Rails projects, this helper allow me to write concise and
+<p>Included in my Rails projects, this helper allow me to write concise and
   legible angular code in my preferred CoffeeScript class syntax. Here is a short
   example of a rewritten Angular controller with the new syntax and format:</p>
 
-<pre><code>class CalendarCtrl extends @NGController
-  @register window.App
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">CalendarCtrl</span> <span class="k">extends</span> <span class="nx">@NGController</span>
+</span><span class="line">  <span class="nx">@register</span> <span class="nb">window</span><span class="p">.</span><span class="nx">App</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@$inject: </span><span class="p">[</span>
+</span><span class="line">    <span class="s">&#39;$scope&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Calendar&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Panel&#39;</span><span class="p">,</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">init: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="vi">@config = </span><span class="nx">@Calendar</span><span class="p">.</span><span class="nx">config</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  @$inject: [
-    '$scope',
-    'Calendar',
-    'Panel',
-  ]
-
-  init: -&gt;
-    @config = @Calendar.config()
-</code></pre>
-
-<p>  Is there anything explicitly problematic or wrong about the verbose
+<p>Is there anything explicitly problematic or wrong about the verbose
   traditional Angular syntax? Absolutely not! Does this syntax make me a happier
   developer and allow me to get my code out the door quicker? Without a doubt.
   Setting up this syntax was a fun endeavor and my hope is it makes at least one
-  other developer&#8217;s life happier!</p>
+  other developer’s life happier!</p>
 
-<h2>Rails Resource To The Rescue</h2>
+<h2 id="rails-resource-to-the-rescue">Rails Resource To The Rescue</h2>
 
-<p>  One of the last remaining hurdles to quick and easy angular development with
+<p>One of the last remaining hurdles to quick and easy angular development with
   rails is wiring up Rails resources with Angular. One source of frustration is
-  Angular&#8217;s handling (or lack thereof) of nested resource parameters. Here are a few
+  Angular’s handling (or lack thereof) of nested resource parameters. Here are a few
   recent GitHub issues as examples of that frustration <strong><a href="https://github.com/angular/angular.js/pull/1640">fix(ngResource): Add support for nested params</a></strong>
   and <strong><a href="https://github.com/angular/angular.js/issues/3740">Query params not serializes as expected</a></strong>.
   Thankfully, Angular uses a modular approach to resource handling, so swapping
   ngResource with a different library is a breeze.</p>
 
-<p>  After months of massaging the flat params from Angular in my Rails controllers, I
+<p>After months of massaging the flat params from Angular in my Rails controllers, I
   stumbled across <strong><a href="https://github.com/FineLinePrototyping/angularjs-rails-resource">Rails Resource</a></strong>.
   Rails Resource is a promise based resource module that handles Angular resources
   exactly as a default Rails application would expect. With very little code, we
   can wire up Angular with our Rails resource and be on our way.</p>
 
-<p>  As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
+<p>As an example, I have a basic Rails app with a model Beer that <code>belongs_to</code> a
   Brewery. To wire up Angular with these resources using Rails Resource I could
   write an Angular factory such as:</p>
 
-<pre><code>App.factory "Beer", ['railsResourceFactory', 'railsSerializer', (railsResourceFactory, railsSerializer) -&gt;
-  resource = railsResourceFactory
-    url: "/beers"
-    name: "beer"
-    serializer: railsSerializer -&gt;
-      @nestedAttribute 'brewery'
-]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">App</span><span class="p">.</span><span class="nx">factory</span> <span class="s">&quot;Beer&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;railsResourceFactory&#39;</span><span class="p">,</span> <span class="s">&#39;railsSerializer&#39;</span><span class="p">,</span> <span class="nf">(railsResourceFactory, railsSerializer) -&gt;</span>
+</span><span class="line">  <span class="nv">resource = </span><span class="nx">railsResourceFactory</span>
+</span><span class="line">    <span class="nv">url: </span><span class="s">&quot;/beers&quot;</span>
+</span><span class="line">    <span class="nv">name: </span><span class="s">&quot;beer&quot;</span>
+</span><span class="line">    <span class="nv">serializer: </span><span class="nx">railsSerializer</span> <span class="o">-&gt;</span>
+</span><span class="line">      <span class="nx">@nestedAttribute</span> <span class="s">&#39;brewery&#39;</span>
+</span><span class="line"><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  This code creates an Angular resource &#8216;Beer&#8217; and maps it to the appropriate
+<p>This code creates an Angular resource ‘Beer’ and maps it to the appropriate
   endpoints in our Rails application. Our next step is to setup the association
   with the Brewery model. You can see this done above with the following lines:</p>
 
-<pre><code>  serializer: railsSerializer -&gt;
-    @nestedAttribute 'brewery'
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line">  <span class="nv">serializer: </span><span class="nx">railsSerializer</span> <span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@nestedAttribute</span> <span class="s">&#39;brewery&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>  The serializer in Rails Resource looks to be quite powerful in allowing you to
+<p>The serializer in Rails Resource looks to be quite powerful in allowing you to
   both specify relationships and alter the json coming and going to resource
   endpoints. The factory we have created above sets up a Beer resource in Angular
   that <code>accepts_nested_attributes_for</code> a Brewery resource. With only the code
@@ -264,60 +330,86 @@ MyService.on 'my:event', -&gt; doStuff()
   are just what Rails expects and is handled easily by a traditional Rails
   create action.</p>
 
-<pre><code>Started POST "/beers" for 127.0.0.1
-Processing by BeersController#create as JSON
-Parameters: {"beer"=&gt;{"name"=&gt;"Goose Island IPA", "description"=&gt;"Hoppy Goodness",
-             "brewery_attributes"=&gt;{"name"=&gt;"Goose Island"}}}
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="no">Started</span> <span class="no">POST</span> <span class="s2">&quot;/beers&quot;</span> <span class="k">for</span> <span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+</span><span class="line"><span class="no">Processing</span> <span class="n">by</span> <span class="no">BeersController</span><span class="c1">#create as JSON</span>
+</span><span class="line"><span class="no">Parameters</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;beer&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Goose Island IPA&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Hoppy Goodness&quot;</span><span class="p">,</span>
+</span><span class="line">             <span class="s2">&quot;brewery_attributes&quot;</span><span class="o">=&gt;</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=&gt;</span><span class="s2">&quot;Goose Island&quot;</span><span class="p">}}}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<h2>The Result</h2>
+<h2 id="the-result">The Result</h2>
 
-<p>  During this article I have described three tools I use to make me a happier Rails
+<p>During this article I have described three tools I use to make me a happier Rails
   developer leveraging the power of AngularJS in my applications:</p>
 
 <ol>
-<li>Letting each framework handle what it&#8217;s good at</li>
-<li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
-<li>A resource module that wires up Rails resources with ease</li>
+  <li>Letting each framework handle what it’s good at</li>
+  <li>The CoffeeScript helper that allows me to write more concise code in a syntax I enjoy</li>
+  <li>A resource module that wires up Rails resources with ease</li>
 </ol>
 
-
-<p>  Using these methods I setup a very basic CRUD Rails application on Github
+<p>Using these methods I setup a very basic CRUD Rails application on Github
   <strong><a href="http://github.com/davidstump/beers">davidstump/beers</a></strong>. With the exception
   of the factory shown above, the only Javascript required was a short and sweet
   Angular controller:</p>
 
-<pre><code>class BeersCtrl extends @NGController
-  @register window.App
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="k">class</span> <span class="nx">BeersCtrl</span> <span class="k">extends</span> <span class="nx">@NGController</span>
+</span><span class="line">  <span class="nx">@register</span> <span class="nb">window</span><span class="p">.</span><span class="nx">App</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@$inject: </span><span class="p">[</span>
+</span><span class="line">    <span class="s">&#39;$scope&#39;</span><span class="p">,</span>
+</span><span class="line">    <span class="s">&#39;Beer&#39;</span>
+</span><span class="line">  <span class="p">]</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">init: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@loadBeers</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">loadBeers: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="nx">@Beer</span><span class="p">.</span><span class="nx">query</span><span class="p">().</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="vi">@all = </span><span class="nx">results</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">create: </span><span class="o">-&gt;</span>
+</span><span class="line">    <span class="k">new</span> <span class="nx">@Beer</span><span class="p">(</span><span class="nx">@newBeer</span><span class="p">).</span><span class="nx">create</span><span class="p">().</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="nx">@loadBeers</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nv">destroy: </span><span class="nf">(beer_id) -&gt;</span>
+</span><span class="line">    <span class="nx">@Beer</span><span class="p">.</span><span class="nx">$delete</span><span class="p">(</span><span class="nx">@Beer</span><span class="p">.</span><span class="nx">resourceUrl</span><span class="p">(</span><span class="nx">beer_id</span><span class="p">)).</span><span class="k">then</span> <span class="p">(</span><span class="nx">results</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">      <span class="nx">@loadBeers</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-  @$inject: [
-    '$scope',
-    'Beer'
-  ]
-
-  init: -&gt;
-    @loadBeers()
-
-  loadBeers: -&gt;
-    @Beer.query().then (results) =&gt;
-      @all = results
-
-  create: -&gt;
-    new @Beer(@newBeer).create().then (results) =&gt;
-      @loadBeers()
-
-  destroy: (beer_id) -&gt;
-    @Beer.$delete(@Beer.resourceUrl(beer_id)).then (results) =&gt;
-      @loadBeers()
-</code></pre>
-
-<p>  This style of Angular fits seamlessly into my familiar mental
+<p>This style of Angular fits seamlessly into my familiar mental
   model formed from my time developing Rails applications and ultimately makes
   me a quicker, happier and healthier developer.</p>
 
-<p>  I would love any and all feedback (and Pull Requests) on both these approaches
+<p>I would love any and all feedback (and Pull Requests) on both these approaches
   as well as the NGHelper library itself. Thank you for taking the time to read
   through my thoughts and happy coding!</p>
+
 ]]></content>
   </entry>
   
@@ -343,14 +435,21 @@ for browsing on <a href="https://gist.github.com/davidstump/5499239">GitHub</a><
 
 <p>To get our class started, we will setup a few variables that will help us along the way.</p>
 
-<pre><code>@Touch=
-  horizontalSensitivity: 22
-  verticalSensitivity: 6
-  touchDX: 0
-  touchDY: 0
-  touchStartX: 0
-  touchStartY: 0
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="vi">@Touch=</span>
+</span><span class="line">  <span class="nv">horizontalSensitivity: </span><span class="mi">22</span>
+</span><span class="line">  <span class="nv">verticalSensitivity: </span><span class="mi">6</span>
+</span><span class="line">  <span class="nv">touchDX: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchDY: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchStartX: </span><span class="mi">0</span>
+</span><span class="line">  <span class="nv">touchStartY: </span><span class="mi">0</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>The sensitivity variables allow us to specify how long a touch event should last before
 we go ahead and emit our event to the rest of the application. This helps us differentiate
@@ -358,60 +457,93 @@ between a swipe style gesture versus a simple tap. The next two variables will h
 distance travelled during our touch event. Finally, the last two will let us store the
 starting point of our event.</p>
 
-<pre><code>bind: (elements...) -&gt;
-  for elem in elements
-    elem.addEventListener "touchstart", (event) =&gt;
-     @handleStart(event, elem)
-    elem.addEventListener "touchmove", (event) =&gt;
-     @handleMove(event, elem)
-    elem.addEventListener "touchend", (event) =&gt;
-     @handleEnd(event, elem)
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">bind: </span><span class="nf">(elements...) -&gt;</span>
+</span><span class="line">  <span class="k">for</span> <span class="nx">elem</span> <span class="k">in</span> <span class="nx">elements</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchstart&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleStart</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchmove&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleMove</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="nx">elem</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="s">&quot;touchend&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span>
+</span><span class="line">     <span class="nx">@handleEnd</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>First we want to add a bind method to our class to attach the appropriate touch events to
 whichever DOM element (or elements) specified. This method handles one or more elements
 and attaches the touchstart, touchmove and touchend events and delegates the appropriate
 handler methods for each type.</p>
 
-<pre><code>handleStart: (event, elem) -&gt;
-  if event.touches.length is 1
-    @touchDX = 0
-    @touchDY = 0
-    @touchStartX = event.touches[0].pageX
-    @touchStartY = event.touches[0].pageY
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleStart: </span><span class="nf">(event, elem) -&gt;</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">1</span>
+</span><span class="line">    <span class="vi">@touchDX = </span><span class="mi">0</span>
+</span><span class="line">    <span class="vi">@touchDY = </span><span class="mi">0</span>
+</span><span class="line">    <span class="vi">@touchStartX = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageX</span>
+</span><span class="line">    <span class="vi">@touchStartY = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageY</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once we have the events attached to the correct elements, we need to tell our class how to
 handle the various event types along the way. Here we store our initial values once the touch
 event is initially registered.</p>
 
-<pre><code>handleMove: (event, elem) -&gt;
-  if event.touches.length &gt; 1
-    @cancelTouch(elem)
-    return false
-
-  @touchDX = event.touches[0].pageX - @touchStartX
-  @touchDY = event.touches[0].pageY - @touchStartY
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleMove: </span><span class="nf">(event, elem) -&gt;</span>
+</span><span class="line">  <span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span><span class="line">    <span class="nx">@cancelTouch</span><span class="p">(</span><span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">    <span class="k">return</span> <span class="kc">false</span>
+</span><span class="line">
+</span><span class="line">  <span class="vi">@touchDX = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageX</span> <span class="o">-</span> <span class="nx">@touchStartX</span>
+</span><span class="line">  <span class="vi">@touchDY = </span><span class="nx">event</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">pageY</span> <span class="o">-</span> <span class="nx">@touchStartY</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Next we need a method fired during the portion of the touch event where our finger is moving
 across the screen. During this event we want to detect if another touch event is registered
 and reset our listeners to avoid complications. We also want to update our two variables
 tasked with telling us the distance our touch event has travelled.</p>
 
-<pre><code>handleEnd: (event,elem) -&gt;
-  dx = Math.abs(@touchDX)
-  dy = Math.abs(@touchDY)
-
-  if (dx &gt; @horizontalSensitivity) and (dy &lt; (dx * 2 / 3))
-    if @touchDX &gt; 0 then @emitSlideRight() else @emitSlideLeft()
-
-  if (dy &gt; @verticalSensitivity) and (dx &lt; (dy * 2 / 3))
-    if @touchDY &gt; 0 then @emitSlideDown() else @emitSlideUp()
-
-  @cancelTouch(event, elem)
-  false
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">handleEnd: </span><span class="nf">(event,elem) -&gt;</span>
+</span><span class="line">  <span class="nv">dx = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">@touchDX</span><span class="p">)</span>
+</span><span class="line">  <span class="nv">dy = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">@touchDY</span><span class="p">)</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">if</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">&gt;</span> <span class="nx">@horizontalSensitivity</span><span class="p">)</span> <span class="o">and</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">@touchDX</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="nx">@emitSlideRight</span><span class="p">()</span> <span class="k">else</span> <span class="nx">@emitSlideLeft</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="k">if</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&gt;</span> <span class="nx">@verticalSensitivity</span><span class="p">)</span> <span class="o">and</span> <span class="p">(</span><span class="nx">dx</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class="line">    <span class="k">if</span> <span class="nx">@touchDY</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="nx">@emitSlideDown</span><span class="p">()</span> <span class="k">else</span> <span class="nx">@emitSlideUp</span><span class="p">()</span>
+</span><span class="line">
+</span><span class="line">  <span class="nx">@cancelTouch</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">elem</span><span class="p">)</span>
+</span><span class="line">  <span class="kc">false</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once a touchend event is triggered and the gesture is complete, we need to gather the total
 distance travelled both horizontally and vertically. Once we have these values, we can use our
@@ -420,11 +552,15 @@ to the rest of our application. We can also use the positive or negative value o
 our difference/distance variable to indicate the specific direction of our event and emit the
 correct notification.</p>
 
-<pre><code>emitSlideLeft: -&gt; @emit 'swipe:left'
-emitSlideRight: -&gt; @emit 'swipe:right'
-emitSlideUp: -&gt; @emit 'swipe:up'
-emitSlideDown: -&gt; @emit 'swipe:down'
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nv">emitSlideLeft: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:left&#39;</span>
+</span><span class="line"><span class="nv">emitSlideRight: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:right&#39;</span>
+</span><span class="line"><span class="nv">emitSlideUp: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:up&#39;</span>
+</span><span class="line"><span class="nv">emitSlideDown: </span><span class="o">-&gt;</span> <span class="nx">@emit</span> <span class="s">&#39;swipe:down&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Finally, once we have successfully registered a touch event and determined that it passes
 our sensitivity threshold set initially, we need to emit the correct event to our application.
@@ -433,19 +569,22 @@ event notification with very little code.</p>
 
 <p>With our new touch class, we can now bind touch events to any elements in our application.</p>
 
-<pre><code>Touch.bind document.getElementById('menu')
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">Touch</span><span class="p">.</span><span class="nx">bind</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s">&#39;menu&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Once we have our bindings set, performing actions based our touch events is as easy as calling
 a method when a touch event is detected.</p>
 
-<pre><code>Touch.on 'swipe:left', =&gt; @toggleMenu()
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="coffeescript"><span class="line"><span class="nx">Touch</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;swipe:left&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@toggleMenu</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>While this class certainly doesn&#8217;t handle every possible interaction on a handheld or tablet
+<p>While this class certainly doesn’t handle every possible interaction on a handheld or tablet
 device, it does provide you with a great base for handling basic touch events throughout your
 application with very little code. I welcome and look forward to any and all feedback, suggestions
 and improvements and hope this little class proves helpful!</p>
+
 ]]></content>
   </entry>
   
@@ -456,9 +595,9 @@ and improvements and hope this little class proves helpful!</p>
     <id>http://davidstump.github.com/blog/2013/02/10/use-git-to-manage-your-time</id>
     <content type="html"><![CDATA[<p><strong>A gem that uses your git commits to manage a Freshbooks timesheet</strong></p>
 
-<p>As an extension to my git-based timesheet I <a href="http://davidstump.net/blog/2012/12/31/add-a-simple-git-timesheet/">wrote about at the beginning of the year</a>, I went ahead and setup a self contained gem with some additional features. The gem, mytime, can be found at: <a href="http://rubygems.org/gems/mytime">rubygems.org/gems/mytime</a> as well as <a href="https://github.com/davidstump/mytime">github.com/davidstump/mytime</a> for your browsing pleasure.</p>
+<p>As an extension to my git-based timesheet I <a href="http://davidstump.net/blog/2012/12/31/add-a-simple-git-timesheet/">wrote about at the beginning of the year</a>, I went ahead and setup a self contained gem with some additional features. The gem, mytime, can be found at: <a href="http://rubygems.org/gems/mytime">rubygems.org/gems/mytime</a> as well as <a href="https://github.com/davidstump/mytime">github.com/davidstump/mytime</a> for your browsing pleasure. </p>
 
-<p>The mytime gem uses your git commit history, in the same manner as the timesheet alias did, to pull a log of your daily activities. Once you have this daily history, you can tell mytime to &#8216;push&#8217; all of your commits as a timesheet log to Freshbooks using their API. Additionally, you can &#8216;submit&#8217; custom timesheet entries to Freshbooks as needed.</p>
+<p>The mytime gem uses your git commit history, in the same manner as the timesheet alias did, to pull a log of your daily activities. Once you have this daily history, you can tell mytime to ‘push’ all of your commits as a timesheet log to Freshbooks using their API. Additionally, you can ‘submit’ custom timesheet entries to Freshbooks as needed. </p>
 
 <p><strong>MyTime Documentation</strong></p>
 
@@ -466,7 +605,7 @@ and improvements and hope this little class proves helpful!</p>
 
 <p><strong>Installation</strong></p>
 
-<p>Add this line to your application&#8217;s Gemfile:</p>
+<p>Add this line to your application’s Gemfile:</p>
 
 <pre><code>gem 'mytime'
 </code></pre>
@@ -483,33 +622,33 @@ and improvements and hope this little class proves helpful!</p>
 
 <p><strong>Usage</strong></p>
 
-<p>  To link to your Freshbooks account (you will need your Freshbooks username and API token):</p>
+<p>To link to your Freshbooks account (you will need your Freshbooks username and API token):</p>
 
 <pre><code>$ mytime setup
 </code></pre>
 
-<p>  To initialize mytime in a project directory:</p>
+<p>To initialize mytime in a project directory:</p>
 
 <pre><code>$ mytime init
 </code></pre>
 
-<p>  To see project details:</p>
+<p>To see project details:</p>
 
 <pre><code>$ mytime project
 </code></pre>
 
-<p>  To list log:</p>
+<p>To list log:</p>
 
 <pre><code>$ mytime status
 </code></pre>
 
-<p>  To submit custom time entry:</p>
+<p>To submit custom time entry:</p>
 
 <pre><code>$ mytime commit [hrs] [custom_message]
 $ mytime commit  1.5 "Add an additional note if desired"
 </code></pre>
 
-<p>  To push your git logs from today for a given project:</p>
+<p>To push your git logs from today for a given project:</p>
 
 <pre><code>$ mytime push [hrs]
 $ mytime push 4.5
@@ -517,7 +656,7 @@ $ mytime push 4.5
 
 <p>I would love some feedback and/or pull requests to extend this little gem to include other timesheets, features, etc. I made this to help myself keep track of my daily commits per project, but hopefully it helps out a few others along the way. Thanks for reading!</p>
 
-<p><strong>Cheers!</strong><br/>
+<p><strong>Cheers!</strong><br />
 David</p>
 ]]></content>
   </entry>
@@ -527,14 +666,14 @@ David</p>
     <link href="http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/"/>
     <updated>2013-01-15T16:09:00-05:00</updated>
     <id>http://davidstump.github.com/blog/2013/01/15/a-better-fullscreen-experience-in-sublime</id>
-    <content type="html"><![CDATA[<p>While I love coding with my editor in fullscreen mode, I also enjoy having apps such as Campfire or Rdio accessible on another monitor. One complaint I have had with the default OSX fullscreen mode is that it causes a second monitor to show nothing but the grey textured spaced background. I was thrilled the other day when I discovered a feature in Sublime that allowed me to use a &#8220;simple&#8221; fullscreen mode which behaves differently than the standard OSX mode. If you add the following to your Sublime preferences:</p>
+    <content type="html"><![CDATA[<p>While I love coding with my editor in fullscreen mode, I also enjoy having apps such as Campfire or Rdio accessible on another monitor. One complaint I have had with the default OSX fullscreen mode is that it causes a second monitor to show nothing but the grey textured spaced background. I was thrilled the other day when I discovered a feature in Sublime that allowed me to use a “simple” fullscreen mode which behaves differently than the standard OSX mode. If you add the following to your Sublime preferences:</p>
 
 <pre><code>"use_simple_full_screen": true
 </code></pre>
 
-<p>Using the Enter Full Screen shortcut will allow you to have nothing but your code on one monitor and still use your second monitor for whatever apps your heart desires. Simple preference edit that has made my work flow that much better.</p>
+<p>Using the Enter Full Screen shortcut will allow you to have nothing but your code on one monitor and still use your second monitor for whatever apps your heart desires. Simple preference edit that has made my work flow that much better. </p>
 
-<p><strong>Cheers!</strong><br/>
+<p><strong>Cheers!</strong><br />
 David</p>
 ]]></content>
   </entry>
@@ -568,7 +707,7 @@ David</p>
 
 <p>Nothing complicated at all, but hopefully someone else finds this as helpful as I did. Thanks to <a href="http://twitter.com/chris_mccord">@chris_mccord</a> for adding the user.name snippet to this alias.</p>
 
-<p>Cheers!<br/>
+<p>Cheers!<br />
 David</p>
 ]]></content>
   </entry>
@@ -580,13 +719,13 @@ David</p>
     <id>http://davidstump.github.com/blog/2012/12/26/initial-commit</id>
     <content type="html"><![CDATA[<p><strong>Happy Blizzard 2012!</strong></p>
 
-<p>It&#8217;s not quite New Year&#8217;s Eve, however, I thought I would get a jump start on a resolution early this year. The resolution idea comes from my awesome co-workers at <a href="http://littlelines.com">Littlelines</a> who each mentioned re-starting their blog presence and making an effort to write and share more in 2013. I love the developer community [specifically the Ruby/Rails community as of late] and the ease/effort with which help, advice, problems and solutions are shared and discussed. For this new year, I am planning to make a concerted effort to write, share and help the community that has helped in uncountable ways getting me where I am today [which is a pretty fantastic happy place!].</p>
+<p>It’s not quite New Year’s Eve, however, I thought I would get a jump start on a resolution early this year. The resolution idea comes from my awesome co-workers at <a href="http://littlelines.com">Littlelines</a> who each mentioned re-starting their blog presence and making an effort to write and share more in 2013. I love the developer community [specifically the Ruby/Rails community as of late] and the ease/effort with which help, advice, problems and solutions are shared and discussed. For this new year, I am planning to make a concerted effort to write, share and help the community that has helped in uncountable ways getting me where I am today [which is a pretty fantastic happy place!]. </p>
 
-<p>Perhaps this sentimental resolution is partially a result of a bit too much holiday cheer [by way of food, presents, family and one midwest blizzard], but a little more cheer throughout the non-holiday months couldn&#8217;t hurt anyone, right?</p>
+<p>Perhaps this sentimental resolution is partially a result of a bit too much holiday cheer [by way of food, presents, family and one midwest blizzard], but a little more cheer throughout the non-holiday months couldn’t hurt anyone, right?</p>
 
 <p>With that, I hope everyone had a relaxing holiday break and is pumped to start a brand new 2013 in a few days. Also, keep and eye out for some exciting Dayton Ruby Community news in the near future!!</p>
 
-<p><strong>Cheers!</strong><br/>
+<p><strong>Cheers!</strong><br />
 <em>David</em></p>
 ]]></content>
   </entry>

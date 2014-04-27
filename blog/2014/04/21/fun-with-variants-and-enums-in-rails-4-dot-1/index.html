@@ -123,69 +123,88 @@ $(function(){
 
 <p>The release of Rails 4.1 this past week included some <a href="http://weblog.rubyonrails.org/2014/4/8/Rails-4-1/">cool new features</a> two of which are the introduction of enums and variants. Enums give us some syntatic sugar for handling attributes like status, role, etc. Variants allow us to handle separate types of templates from within a respond_to block on a given action. I setup a <a href="https://github.com/davidstump/enums_and_variants">tiny Rails 4.1 application</a> to demonstrate one possible use for these two new features.</p>
 
-<p><strong>Enum</strong></p>
+<p><strong>Enum</strong> </p>
 
 <p>This application has a basic user model with a name string and an email string. The users controller contains basic index and show actions to show a list to users and their respective details. In the user model, I included an enum attribute <code>role</code> to handle differentiating between users of different types (student, admin or staff). The basic way of defining an enum attribute is as follows:</p>
 
-<pre><code>enum role: [:student, :admin, :staff]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="o">[</span><span class="ss">:student</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:staff</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>However, with enums used in this fashion, order must always be maintained or you risk recasting your users with a new role unintentionally. Suppose, months later, a new developer comes along and adjusts the code above like so:</p>
 
-<pre><code>enum role: [:golfer, :student, :admin, :staff]
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="o">[</span><span class="ss">:golfer</span><span class="p">,</span> <span class="ss">:student</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">:staff</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops.</p>
+<p>We have now, inadvertanly, cast every user previously assigned with the role <code>:student</code> to <code>:golfer</code>. Oops. </p>
 
 <p>For this reason I would most likely use explicitly defined enums to avoid any potential future mishaps:</p>
 
-<pre><code>enum role: {student: 0, admin: 1, staff: 2}
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">enum</span> <span class="n">role</span><span class="p">:</span> <span class="p">{</span><span class="n">student</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">admin</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">staff</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm.</p>
+<p>In this example, even if my new developer friend stumbles across this and updates it, they would have to explicitly overwrite the role associated with a given integer to cause any harm. </p>
 
 <p>Once I have my enum defined, I now have access to all kinds of goodies to use throughout my application. I can now easily determine a given users role:</p>
 
-<pre><code>user.role # =&gt; "student"
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">role</span> <span class="c1"># =&gt; &quot;student&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>I can easily determine if a user is a member of a particular role:</p>
 
-<pre><code>user.student? # =&gt; true
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">student?</span> <span class="c1"># =&gt; true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>I can quickly assign/update a user&#8217;s role:</p>
+<p>I can quickly assign/update a user’s role:</p>
 
-<pre><code>user.staff! # =&gt; [sql] true
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="n">user</span><span class="o">.</span><span class="n">staff!</span> <span class="c1"># =&gt; [sql] true</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p>Or see all of the users scoped to a particular role:</p>
 
-<pre><code>User.staff # =&gt; #&lt;ActiveRecord::Relation []&gt;
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="no">User</span><span class="o">.</span><span class="n">staff</span> <span class="c1"># =&gt; #&lt;ActiveRecord::Relation []&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
 <p><strong>Variants</strong></p>
 
-<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user&#8217;s role.</p>
+<p>Variants can be used within a respond_to block to handle the same action in separate ways. Using the <code>User</code> model from above, we can render a show page unique for a particular user’s role.</p>
 
-<pre><code>def show
-  @user = User.find(params[:id])
-  request.variant = @user.role.to_sym
-  respond_to do |format|
-    format.html do |html|
-      html.student
-      html.staff
-      html.admin
-    end
-  end
-end
-</code></pre>
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+</pre></td><td class="code"><pre><code class="ruby"><span class="line"><span class="k">def</span> <span class="nf">show</span>
+</span><span class="line">  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class="line">  <span class="n">request</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">to_sym</span>
+</span><span class="line">  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class="line">    <span class="nb">format</span><span class="o">.</span><span class="n">html</span> <span class="k">do</span> <span class="o">|</span><span class="n">html</span><span class="o">|</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">student</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">staff</span>
+</span><span class="line">      <span class="n">html</span><span class="o">.</span><span class="n">admin</span>
+</span><span class="line">    <span class="k">end</span>
+</span><span class="line">  <span class="k">end</span>
+</span><span class="line"><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 
-<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc.</p>
+<p>In this example, the variants of the show action such as <code>html.student</code> will render a view template with the name matching: <code>show.html+student.haml</code> (or erb if you prefer). This allows us to use the same logic from our show action but render different content/layouts. This pattern could also be used to present different templates for mobile devices, webviews inside native mobile apps, etc. </p>
 
-<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user&#8217;s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
+<p>With very little additional code, enums and variants allowed me to add a very basic role engine to my application and render content unique to a user’s role. These are just two of the fun new updates released in Rails 4.1. Check out the <a href="http://edgeguides.rubyonrails.org/4_1_release_notes.html">Release Notes</a> for some additional reading.</p>
 
 <p>Cheers!</p>
+
 </div>
 
 </article>
