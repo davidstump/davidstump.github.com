@@ -1,118 +1,125 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!DOCTYPE HTML>
+<html>
 <head>
-  <meta charset="utf-8">
-  <title>Fun with Variants and Enums in Rails 4.1 - David Stump</title>
-  <meta name="author" content="David Stump">
+	<meta charset="utf-8">
+	<title>Fun with Variants and Enums in Rails 4.1 - David Stump</title>
+	<meta name="author" content="David Stump">
 
-  
-  <meta name="description" content="This article was originally published at Littlelines. The release of Rails 4.1 this past week included some cool new features two of which are the &hellip;">
-  
+	
+	<meta name="description" content="Fun With Variants and Enums in Rails 4.1 Apr 21st, 2014 This article was originally published at Littlelines. The release of Rails 4.1 this past &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="David Stump" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+	<link href="/atom.xml" rel="alternate" title="David Stump" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Lora:400,400italic,700,700italic|Istok+Web:400,400italic,700,700italic" rel="stylesheet" type="text/css">
 
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-37247497-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
 </head>
 
-<body>
-  <div id="header-container">
-    <div id="header">
-      <div class="wrapper">
-        <header role="banner"><hgroup>
-  <h1>
-    <a href="/">
-      <img src="/images/avatar.jpg" alt="David Stump" id="avatar" />
-      David Stump
-    </a>
-  </h1>
-</hgroup>
 
-</header>
-        <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:davidstump.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><nav id="main-nav"><ul class="main-navigation">
   <li><a href="/">Home</a></li>
   <li><a href="http://www.linkedin.com/in/davidstump/" target="_blank">Profile</a></li>
+  <li><a href="http://github.com/davidstump/" target="_blank">GitHub</a></li>
+  <li><a href="http://littlelines.com/" target="_blank">Littlelines</a></li>
   <li><a href="/blog/archives">Archives</a></li>
 </ul>
-
 </nav>
-      </div>
-    </div>
+<!-- <nav id="sub-nav">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/davidstump" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/davidstump" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav> -->
+<div class="profile-container">
+  <div class="profilepic">
+    <script src="/javascripts/md5.js"></script>
+    <script type="text/javascript">
+$(function(){
+  $('.profilepic').append("<img src='/images/avatar.jpg' alt='Profile Picture' style='width: 160px;' />");
+});
+    </script>
   </div>
-  <div id="body"   >
-    <div id="main">
-      <div id="content">
-	<div>
-<article class="hentry" role="article">
+  <hgroup>
+  <h1 class="site-title"><a href="/">David Stump</a></h1>
   
-  <header>
-    
-      <h1 class="entry-title">Fun With Variants and Enums in Rails 4.1</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
+  <p class="site-subtitle">Hacking Adventures in Dayton, OH.</p>
+  
+  </hgroup>
   
 
+</div>
+</header>
+			</div>
+		</div>
+		<div class="mid-col">
+			
+				
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/davidstump">davidstump</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('davidstump', 5, false);
+	})(jQuery);
+</script>
 
-<time datetime="2014-04-21T09:51:00Z" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
+			
+			<div class="mid-col-container">
+				<div id="content" class="article-inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+	<h1 class="title" itemprop="name">Fun With Variants and Enums in Rails 4.1</h1>
+  
 
 
-<div class="entry-content"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/04/21/fun_with_variants_and_enums_in_rails_4_1/">Littlelines</a>.</em></p>
+
+
+
+
+
+
+  
+
+
+
+  <div class="post-date"><time datetime="2014-04-21T09:51:00Z" data-updated="true" itemprop="datePublished">Apr 21<span>st</span>, 2014</time></div>
+	<div class="entry-content" itemprop="articleBody"><p><em>This article was originally published at <a href="http://littlelines.com/blog/2014/04/21/fun_with_variants_and_enums_in_rails_4_1/">Littlelines</a>.</em></p>
 
 <p>The release of Rails 4.1 this past week included some <a href="http://weblog.rubyonrails.org/2014/4/8/Rails-4-1/">cool new features</a> two of which are the introduction of enums and variants. Enums give us some syntatic sugar for handling attributes like status, role, etc. Variants allow us to handle separate types of templates from within a respond_to block on a given action. I setup a <a href="https://github.com/davidstump/enums_and_variants">tiny Rails 4.1 application</a> to demonstrate one possible use for these two new features.</p>
 
@@ -181,152 +188,45 @@ end
 <p>Cheers!</p>
 </div>
 
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">David Stump</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-21T09:51:00Z" pubdate data-updated="true">Apr 21<span>st</span>, 2014</time>
-      
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/" data-via="davidstump" data-counturl="http://davidstump.github.com/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/" >Tweet</a>
-  
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/" title="Previous Post: How To Use Angular and Keep Loving Rails">&laquo; How To Use Angular and Keep Loving Rails</a>
-      
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
+	<div class="share">
+	<div class="share_icon_group addthis_toolbox addthis_default_style addthis_32x32_style">
+	
+  <a class="share_icon addthis_button_preferred_1"></a>
+	
+	
+	<a class="share_icon addthis_button_preferred_2" fb:like:layout="button_count"></a>
+	
+	
+	<a class="share_icon addthis_button_preferred_4"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
     <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
-
+</section>
 </div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2014/04/21/fun-with-variants-and-enums-in-rails-4-dot-1/">Fun with Variants and Enums in Rails 4.1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/21/how-to-use-angular-and-keep-loving-rails/">How To Use Angular and Keep Loving Rails</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/06/simple-touch-events-in-coffeescript/">Simple Touch Events in CoffeeScript</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/10/use-git-to-manage-your-time/">Use Git To Manage Your Time</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/15/a-better-fullscreen-experience-in-sublime/">A Better Fullscreen Experience in Sublime</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/davidstump">@davidstump</a> on GitHub
-  
-  <script type="text/javascript">
-    $.domReady(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'davidstump',
-            count: 6,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating...</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("davidstump", 5, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
-  
-    <a href="http://twitter.com/davidstump" class="twitter-follow-button" data-show-count="false">Follow @davidstump</a>
-  
-</section>
-
-
-
-
-
-  
-</aside>
-
-
-      </div>
-    </div>
-    <footer role="contentinfo"><p>
+			</div>
+			<footer id="footer" class="inner"><p>
   Copyright &copy; 2014 - David Stump -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>.</span>
 </p>
 
 </footer>
-    
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
 
 <script type="text/javascript">
       var disqus_shortname = 'davidstump';
@@ -346,33 +246,22 @@ end
 
 
 
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-37247497-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 
 
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-  </div>
+		</div>
+	</div>
 </body>
 </html>
